@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Demo</string>
+
+    <!-- activity_login -->
+    <string name="login.title">Firebase Login</string>
+    <string name="login.hint.email">Email</string>
+    <string name="login.hint.password">Password</string>
+    <string name="login.button.login">Login</string>
+    <string name="login.text.register">No account yet?</string>
+    <string name="login.button.register">Register now</string>
+    <string name="login.dialog.progress">Please wait...</string>
+    <string name="login.dialog.registration.title">Create a new account</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <!-- activity registration -->
+    <string name="registration.title">Registration</string>
+    <string name="registration.hint.email">Email</string>
+    <string name="registration.hint.password">Password</string>
+    <string name="registration.hint.confirm">Confirm Password</string>
+    <string name="registration.button.register">Register</string>
+    <string name="registration.text.login">Already have an account?</string>
+    <string name="registration.button.login">Login</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- Navigation Drawer -->
+    <string name="drawer.logout">Logout</string>
+
+    <string name="action_settings">Settings</string>
+
+</resources>
