@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/messageRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/linearLayout"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bg_msg_bar"
+            android:elevation="10dp"
+            android:id="@+id/linearLayout">
+
+            <EditText
+                android:id="@+id/messageEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:hint="@string/chat.hint.message"
+                android:inputType="textCapSentences"
+                android:background="@drawable/bg_msg_bar"
+                />
+
+            <ImageButton
+                android:id="@+id/sendButton"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:paddingLeft="5dp"
+                android:enabled="false"
+                android:src="@drawable/ic_menu_send"
+                android:background="@drawable/btn_selector"
+                android:clickable="false"
+                />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</merge>

@@ -1,0 +1,22 @@
+package com.myprojects.marco.firechat.user.service;
+
+import com.myprojects.marco.firechat.user.data_model.User;
+import com.myprojects.marco.firechat.user.data_model.Users;
+
+import rx.Observable;
+
+/**
+ * Created by marco on 31/07/16.
+ */
+
+public interface UserService {
+
+    Observable<Users> getAllUsers();
+
+    Observable<User> getUser(String userId);
+
+    void setName(User user, String name);
+
+    void setProfileImage(User user, String image);
+
+}

@@ -1,17 +1,21 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 25
     buildToolsVersion "23.0.3"
     defaultConfig {
-        applicationId "com.home.marco.demo"
-        minSdkVersion 21
+        applicationId "com.myprojects.marco.firechat"
+        minSdkVersion 19
         targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.0.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -24,16 +28,29 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:24.0.0'
-    compile 'com.android.support:design:24.0.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha3'
-    compile 'com.google.android.gms:play-services-auth:9.2.0'
-    compile 'com.google.firebase:firebase-auth:9.2.0'
+
+    compile 'com.android.support:appcompat-v7:25.0.0'
+    compile 'com.android.support:design:25.0.0'
+    compile 'com.android.support:support-v4:25.0.0'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
+
+    compile 'com.google.android.gms:play-services-auth:9.4.0'
+    compile 'com.google.firebase:firebase-auth:9.4.0'
+    compile 'com.google.firebase:firebase-config:9.4.0'
+    compile 'com.google.firebase:firebase-database:9.4.0'
+    compile 'com.google.firebase:firebase-messaging:9.4.0'
+    compile 'com.google.firebase:firebase-analytics:9.4.0'
+    compile 'com.google.firebase:firebase-storage:9.4.0'
+    compile 'com.google.firebase:firebase-invites:9.4.0'
+    compile 'com.google.firebase:firebase-crash:9.4.0'
+
     compile 'com.afollestad.material-dialogs:core:0.8.6.1'
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+
+    compile 'com.jakewharton.rxrelay:rxrelay:1.1.0'
+
     testCompile 'junit:junit:4.12'
 }
-
-
-
 
 apply plugin: 'com.google.gms.google-services'

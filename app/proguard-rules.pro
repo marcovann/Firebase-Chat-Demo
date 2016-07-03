@@ -15,3 +15,16 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-keepattributes Signature
+-keepattributes *Annotation*
+
+-dontwarn sun.misc.Unsafe
+
+-keepclassmembers class com.myprojects.marco.firechat.conversation.data_model.** {*;}
+-keepclassmembers class com.myprojects.marco.firechat.conversation_list.data_model.** {*;}
+-keepclassmembers class com.myprojects.marco.firechat.global.data_model.** {*;}
+-keepclassmembers class com.myprojects.marco.firechat.user.data_model.** {*;}
+
+-keep public class com.myprojects.marco.firechat.login.**
+

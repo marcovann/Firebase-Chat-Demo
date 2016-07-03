@@ -1,0 +1,36 @@
+package com.myprojects.marco.firechat.global.view;
+
+import com.myprojects.marco.firechat.global.data_model.Chat;
+import com.myprojects.marco.firechat.global.data_model.Message;
+import com.myprojects.marco.firechat.user.data_model.User;
+
+/**
+ * Created by marco on 08/08/16.
+ */
+
+// TODO open conversation on click
+public interface GlobalDisplayer {
+
+    void display(Chat chat, User user);
+
+    void addToDisplay(Message message, User sender, User user);
+
+    void attach(GlobalActionListener globalActionListener);
+
+    void detach(GlobalActionListener globalActionListener);
+
+    void enableInteraction();
+
+    void disableInteraction();
+
+    interface GlobalActionListener {
+
+        void onUpPressed();
+
+        void onMessageLengthChanged(int messageLength);
+
+        void onSubmitMessage(String message);
+
+    }
+
+}

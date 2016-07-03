@@ -1,16 +1,25 @@
 <resources>
-    <string name="app_name">Demo</string>
+    <string name="app_name">Firebase Chat Demo</string>
 
     <!-- activity_login -->
     <string name="login.title">Firebase Login</string>
     <string name="login.hint.email">Email</string>
     <string name="login.hint.password">Password</string>
     <string name="login.button.login">Login</string>
-    <string name="login.text.register">No account yet?</string>
+    <string name="login.button.forgot">Forgot your password?</string>
+    <string name="login.text.register">No user yet?</string>
     <string name="login.button.register">Register now</string>
     <string name="login.dialog.progress">Please wait...</string>
-    <string name="login.dialog.registration.title">Create a new account</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="login.dialog.registration.title">Create a new user</string>
+    <string name="login.dialog.forgot.title">Type your email address</string>
+    <string name="login.dialog.forgot.text">Check your inbox and follow the instructions to reset your password</string>
+    <string name="login.dialog.forgot.ok">Ok</string>
+    <string name="login.dialog.forgot.close">Close</string>
+    <string name="login.snackbar.password.short">Password cannot be empty</string>
+    <string name="login.snackbar.email.error">Email is not valid</string>
+    <string name="login.snackbar.email.short">Email cannot be empty</string>
+    <string name="login.toast.googleauth.error">Authentication failed.</string>
+    <string name="login.toast.googleservices.error">Google Play Services error.</string>
 
     <!-- activity registration -->
     <string name="registration.title">Registration</string>
@@ -18,15 +27,67 @@
     <string name="registration.hint.password">Password</string>
     <string name="registration.hint.confirm">Confirm Password</string>
     <string name="registration.button.register">Register</string>
-    <string name="registration.text.login">Already have an account?</string>
+    <string name="registration.text.login">Already have an user?</string>
     <string name="registration.button.login">Login</string>
+    <string name="registration.dialog.title">Welcome</string>
+    <string name="registration.dialog.text">Verify your email by clicking the link we sent you to your inbox</string>
+    <string name="registration.dialog.positive">Close</string>
+    <string name="registration.snackbar.password.short">Password must be longer than 8 character</string>
+    <string name="registration.snackbar.password.error">Password doesn\'t match</string>
+    <string name="registration.snackbar.email.short">Email cannot be empty</string>
+    <string name="registration.snackbar.email.error">Email is not valid</string>
+
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- activity main -->
+    <string name="title_activity_main">Main Activity</string>
+    <string name="main.invite.title">Invite</string>
+    <string name="main.invite.message">Join me to Firebase demo chat</string>
+    <string name="main.invite.cta">Call to Action</string>
+    <string name="main.toast.logout.message">Logged out</string>
+    <string name="main.toast.exit.message">Please click BACK again to exit</string>
+    <string name="main.dialog.text.wait">Please wait upgrading the database for the first launch</string>
+
+    <!-- activity firstlogin -->
+    <string name="firstlogin.title">Profile</string>
+    <string name="firstLogin.button.next">Start</string>
 
     <!-- Navigation Drawer -->
     <string name="drawer.logout">Logout</string>
 
     <string name="action_settings">Settings</string>
+
+    <!-- activity chat -->
+    <string name="chat.hint.message">Message</string>
+    <string name="chat.textview.typing"> is typing…</string>
+    <string name="chat.toolbar.lastseen.online">Online</string>
+    <string name="chat.toolbar.lastseen.offline.today">Last seen today at time</string>
+    <string name="chat.toolbar.lastseen.offline">Last seen on date at time</string>
+    
+    <!-- activity profile -->
+    <string name="profile.toolbar.title">Profile</string>
+    <string name="profile.button.delete">Delete Account</string>
+    <string name="profile.hint.name">Full Name</string>
+    <string name="profile.hint.password">Change Password</string>
+    <string name="profile.dialog.name.title">Type your name</string>
+    <string name="profile.dialog.password.title">Type your new password</string>
+    <string name="profile.toast.password.negative">An error occured while changing the password</string>
+    <string name="profile.toast.password.positive">Password has been changed successfully</string>
+    <string name="profile.dialog.remove.content">Are you sure you want to delete this account permanently?</string>
+    <string name="profile.dialog.remove.positive">Confirm</string>
+    <string name="profile.dialog.remove.negative">Cancel</string>
+    <string name="profile.dialog.input.close">Close</string>
+
+    <!-- fragment users -->
+    <string name="users.toolbar.title">"Users List"</string>
+
+    <!-- fragment conversations -->
+    <string name="conversations.toolbar.title">Conversations</string>
+    <string name="conversations.conversation.item.today">Today</string>
+
+    <!-- fragment global messages -->
+    <string name="global.toolbar.title">Global Room</string>
 
 </resources>
