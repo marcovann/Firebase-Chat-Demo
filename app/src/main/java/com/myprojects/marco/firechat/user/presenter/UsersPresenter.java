@@ -77,7 +77,7 @@ public class UsersPresenter {
 
             @Override
             public void onNext(Authentication authentication) {
-                userSubscription = userService.getAllUsers()
+                userSubscription = userService.syncUsers()
                         .subscribe(usersSubscriber);
             }
         };

@@ -3,6 +3,8 @@ package com.myprojects.marco.firechat.user.service;
 import com.myprojects.marco.firechat.user.data_model.User;
 import com.myprojects.marco.firechat.user.data_model.Users;
 
+import java.util.List;
+
 import rx.Observable;
 
 /**
@@ -11,9 +13,11 @@ import rx.Observable;
 
 public interface UserService {
 
-    Observable<Users> getAllUsers();
+    Observable<Users> syncUsers();
 
     Observable<User> getUser(String userId);
+
+    Observable<Users> getUsers();
 
     void setName(User user, String name);
 

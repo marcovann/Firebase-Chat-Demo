@@ -1,6 +1,7 @@
 package com.myprojects.marco.firechat;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -21,7 +22,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class Utils {
 
     public static String getCurrentTimestamp() {
-        SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy/MM/dd/HH/mm");
+        SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy/MM/dd/HH/mm/ss");
         dateFormatGmt.setTimeZone(TimeZone.getTimeZone("UTC"));
         return dateFormatGmt.format(new Date());
     }
@@ -34,13 +35,28 @@ public class Utils {
 
             long millis = TimeZone.getDefault().getOffset(currentDate);
             long hour = (millis / (1000 * 60 * 60)) % 24;
+            long minutes = (millis / (1000 * 60)) % 60;
 
             String[] timestampPart = timestamp.split("/");
             long h = Long.parseLong(timestampPart[3]);
+            long m = Long.parseLong(timestampPart[4]);
             h += hour;
             h %= 24;
+            m += minutes;
+            m %= 60;
 
-            return (h + "".length() < 10) ? "0" + h + ":" + timestampPart[4] : h + ":" + timestampPart[4];
+            String output = h + ":" + m;
+            if (h < 10) {
+                if (m < 10) {
+                    output = "0" + h + ":0" + m;
+                } else {
+                    output = "0" + h + ":" + m;
+                }
+            } else if (m < 10) {
+                output = h + ":0" + m;
+            }
+            return output;
+
         } catch (ParseException e) {
 
         }
@@ -79,7 +95,7 @@ public class Utils {
                         .into(imageView);
             }
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+
         }
     }
 
@@ -100,7 +116,7 @@ public class Utils {
                         .into(imageView);
             }
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+
         }
 
     }

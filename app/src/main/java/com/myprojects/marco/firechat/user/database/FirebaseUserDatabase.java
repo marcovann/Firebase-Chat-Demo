@@ -40,9 +40,8 @@ public class FirebaseUserDatabase implements UserDatabase {
     }
 
     @Override
-    public Observable<Users> readUsersFrom(List<String> usersId) {
-        // TODO
-        return null;
+    public Observable<Users> singleObserveUsers() {
+        return firebaseObservableListeners.listenToSingleValueEvents(usersDB, toUsers());
     }
 
     @Override

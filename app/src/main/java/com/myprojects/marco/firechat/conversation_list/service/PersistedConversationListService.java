@@ -39,7 +39,7 @@ public class PersistedConversationListService implements  ConversationListServic
 
     @Override
     public Observable<Users> getUsers(List<String> usersId) {
-        return userDatabase.readUsersFrom(usersId);
+        return userDatabase.singleObserveUsers();
     }
 
 }

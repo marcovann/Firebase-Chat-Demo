@@ -10,8 +10,10 @@ import com.myprojects.marco.firechat.analytics.DeveloperError;
 import com.myprojects.marco.firechat.global.data_model.Chat;
 import com.myprojects.marco.firechat.global.data_model.Message;
 import com.myprojects.marco.firechat.user.data_model.User;
+import com.myprojects.marco.firechat.user.data_model.Users;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by marco on 08/08/16.
@@ -32,8 +34,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageViewHolder> {
         setHasStableIds(true);
     }
 
-    public void update(Chat chat, User user) {
+    public void update(Chat chat, Users users, User user) {
         this.chat = chat;
+        for (User u: users.getUsers())
+            this.chat.addUser(u);
         this.user = user;
         notifyDataSetChanged();
     }

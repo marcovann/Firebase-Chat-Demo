@@ -16,6 +16,9 @@ import com.myprojects.marco.firechat.R;
 import com.myprojects.marco.firechat.global.data_model.Chat;
 import com.myprojects.marco.firechat.global.data_model.Message;
 import com.myprojects.marco.firechat.user.data_model.User;
+import com.myprojects.marco.firechat.user.data_model.Users;
+
+import java.util.List;
 
 /**
  * Created by marco on 08/08/16.
@@ -53,8 +56,8 @@ public class GlobalView extends LinearLayout implements GlobalDisplayer {
     }
 
     @Override
-    public void display(Chat chat, User user) {
-        messageAdapter.update(chat, user);
+    public void display(Chat chat, Users users, User user) {
+        messageAdapter.update(chat, users, user);
         int lastMessagePosition = messageAdapter.getItemCount() == 0 ? 0 : messageAdapter.getItemCount() - 1;
         messageRecyclerView.smoothScrollToPosition(lastMessagePosition);
     }

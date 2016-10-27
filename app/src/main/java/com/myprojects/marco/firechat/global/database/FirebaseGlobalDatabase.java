@@ -37,7 +37,7 @@ public class FirebaseGlobalDatabase implements GlobalDatabase {
 
     @Override
     public Observable<Chat> observeChat() {
-        return firebaseObservableListeners.listenToValueEvents(globalMessages.limitToLast(DEFAULT_LIMIT), toChat());
+        return firebaseObservableListeners.listenToSingleValueEvents(globalMessages.limitToLast(DEFAULT_LIMIT), toChat());
     }
 
     private Func1<DataSnapshot, Chat> toChat() {

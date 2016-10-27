@@ -17,7 +17,7 @@ public interface UserDatabase {
 
     Observable<User> readUserFrom(String userId);
 
-    Observable<Users> readUsersFrom(List<String> usersId);
+    Observable<Users> singleObserveUsers();
 
     Observable<User> observeUser(String userId);
 

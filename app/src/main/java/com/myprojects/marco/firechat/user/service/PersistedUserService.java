@@ -19,13 +19,18 @@ public class PersistedUserService implements UserService {
     }
 
     @Override
-    public Observable<Users> getAllUsers() {
+    public Observable<Users> syncUsers() {
         return userDatabase.observeUsers();
     }
 
     @Override
     public Observable<User> getUser(String userId) {
         return userDatabase.observeUser(userId);
+    }
+
+    @Override
+    public Observable<Users> getUsers() {
+        return userDatabase.singleObserveUsers();
     }
 
     @Override
