@@ -50,6 +50,8 @@
     <string name="main.toast.exit.message">Please click BACK again to exit</string>
     <string name="main.dialog.text.wait">Please wait upgrading the database for the first launch</string>
 
+    <string name="main.toolbar.menu.search">Search</string>
+
     <!-- activity firstlogin -->
     <string name="firstlogin.title">Profile</string>
     <string name="firstLogin.button.next">Start</string>
@@ -82,6 +84,7 @@
 
     <!-- fragment users -->
     <string name="users.toolbar.title">"Users List"</string>
+    <string name="users.toolbar.search.hint">Search...</string>
 
     <!-- fragment conversations -->
     <string name="conversations.toolbar.title">Conversations</string>

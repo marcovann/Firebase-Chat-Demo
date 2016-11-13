@@ -1,5 +1,7 @@
 package com.myprojects.marco.firechat.main.presenter;
 
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.myprojects.marco.firechat.R;
@@ -22,6 +24,8 @@ import rx.functions.Action1;
 
 public class MainPresenter {
 
+    private AppCompatActivity activity;
+
     private final LoginService loginService;
     private final UserService userService;
     private final MainDisplayer mainDisplayer;
@@ -40,7 +44,8 @@ public class MainPresenter {
                          MainService mainService,
                          CloudMessagingService messagingService,
                          AndroidMainNavigator navigator,
-                         String token) {
+                         String token,
+                         AppCompatActivity activity) {
         this.loginService = loginService;
         this.userService = userService;
         this.mainDisplayer = mainDisplayer;
@@ -48,11 +53,12 @@ public class MainPresenter {
         this.messagingService = messagingService;
         this.navigator = navigator;
         this.token = token;
+        this.activity = activity;
     }
 
     public void startPresenting() {
         navigator.init();
-        mainDisplayer.attach(drawerActionListener,navigationActionListener);
+        mainDisplayer.attach(drawerActionListener,navigationActionListener,searchActionListener);
 
         final Subscriber userSubscriber = new Subscriber<User>() {
             @Override
@@ -90,7 +96,6 @@ public class MainPresenter {
                                     }
                                 }
                             });
-
                     mainService.initLastSeen(user);
                     mainDisplayer.setUser(user);
                 }
@@ -114,7 +119,7 @@ public class MainPresenter {
     }
 
     public void stopPresenting() {
-        mainDisplayer.detach(drawerActionListener,navigationActionListener);
+        mainDisplayer.detach(drawerActionListener,navigationActionListener,searchActionListener);
         loginSubscription.unsubscribe();
         if (userSubscription != null) userSubscription.unsubscribe();
         if (messageSubscription != null) messageSubscription.unsubscribe();
@@ -132,12 +137,18 @@ public class MainPresenter {
             switch (item.getItemId()) {
                 case R.id.nav_conversations:
                     navigator.toConversations();
+                    //mainDisplayer.setTitle(activity.getString(R.string.conversations_toolbar_title));
+                    mainDisplayer.clearMenu();
                     break;
                 case R.id.nav_users:
                     navigator.toUserList();
+                    //mainDisplayer.setTitle(activity.getString(R.string.users_toolbar_title));
+                    mainDisplayer.inflateMenu();
                     break;
                 case R.id.nav_global:
                     navigator.toGlobalRoom();
+                    //mainDisplayer.setTitle(activity.getString(R.string.global_toolbar_title));
+                    mainDisplayer.clearMenu();
                     break;
                 case R.id.nav_share:
                     navigator.toInvite();
@@ -152,7 +163,7 @@ public class MainPresenter {
                         mainService.logout();
                         navigator.toLogin();
                     } catch (Exception e) {
-                        e.printStackTrace();
+
                     }
             }
             mainDisplayer.closeDrawer();
@@ -168,5 +179,20 @@ public class MainPresenter {
         }
 
     };
+
+    private final MainDisplayer.SearchActionListener searchActionListener = new MainDisplayer.SearchActionListener() {
+
+        @Override
+        public void showFilteredUsers(String text) {
+            Intent intent = new Intent("SEARCH");
+            intent.putExtra("search",text);
+            activity.sendBroadcast(intent);
+        }
+
+    };
+
+    public boolean onBackPressed() {
+        return mainDisplayer.onBackPressed();
+    }
 
 }

@@ -21,11 +21,15 @@
             android:layout_marginEnd="5dp"
             android:orientation="horizontal">
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/profileImageView"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:background="@drawable/ic_account_circle_white"/>
+                android:src="@drawable/ic_account_circle_white"
+                app:civ_border_width="0dp"
+                app:civ_shadow_radius="0"
+                app:civ_border_color="@color/colorPrimary"
+                />
 
             <LinearLayout
                 android:layout_width="match_parent"

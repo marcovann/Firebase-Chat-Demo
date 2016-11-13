@@ -7,12 +7,17 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.myprojects.marco.firechat.R;
 import com.myprojects.marco.firechat.Utils;
 import com.myprojects.marco.firechat.conversation.data_model.Chat;
@@ -21,7 +26,10 @@ import com.myprojects.marco.firechat.conversation.data_model.Message;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+import github.ankushsachdeva.emojicon.EmojiconEditText;
+import github.ankushsachdeva.emojicon.EmojiconGridView;
+import github.ankushsachdeva.emojicon.EmojiconsPopup;
+import github.ankushsachdeva.emojicon.emoji.Emojicon;
 
 /**
  * Created by marco on 29/07/16.
@@ -30,12 +38,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ConversationView extends LinearLayout implements ConversationDisplayer {
 
     private final ConversationMessageAdapter conversationMessageAdapter;
-    private TextView messageEditText;
+    private EmojiconEditText messageEditText;
     private ImageButton sendButton;
     private RecyclerView messageRecyclerView;
 
+    private EmojiconsPopup popup;
+    private ImageButton emojiconButton;
+
     private Toolbar toolbar;
-    private CircleImageView profileImageView;
+    private CircularImageView profileImageView;
     private TextView nameTextView;
     private TextView lastSeenTextView;
     private TextView typingTextView;
@@ -53,11 +64,16 @@ public class ConversationView extends LinearLayout implements ConversationDispla
         super.onFinishInflate();
         View.inflate(getContext(), R.layout.merge_conversation_view, this);
 
-        messageEditText = (TextView) this.findViewById(R.id.messageEditText);
+        View rootView = this.getRootView();
+        popup = new EmojiconsPopup(rootView, getContext());
+        popup.setSizeForSoftKeyboard();
+
+        messageEditText = (EmojiconEditText) this.findViewById(R.id.messageEditText);
         sendButton = (ImageButton) this.findViewById(R.id.sendButton);
+        emojiconButton = (ImageButton) this.findViewById(R.id.emoticonButton);
 
         toolbar = (Toolbar) this.findViewById(R.id.toolbar);
-        profileImageView = (CircleImageView) toolbar.findViewById(R.id.profileImageView);
+        profileImageView = (CircularImageView) toolbar.findViewById(R.id.profileImageView);
         nameTextView = (TextView) toolbar.findViewById(R.id.nameTextView);
         lastSeenTextView = (TextView) toolbar.findViewById(R.id.lastSeenTextView);
         typingTextView = (TextView) this.findViewById(R.id.typingTextView);
@@ -130,6 +146,11 @@ public class ConversationView extends LinearLayout implements ConversationDispla
         messageEditText.addTextChangedListener(textWatcher);
         sendButton.setOnClickListener(submitClickListener);
         toolbar.setNavigationOnClickListener(navigationClickListener);
+        popup.setOnSoftKeyboardOpenCloseListener(softKeyboardOpenCloseListener);
+        popup.setOnEmojiconClickedListener(emojiconClickedListener);
+        popup.setOnEmojiconBackspaceClickedListener(emojiconBackspaceClickedListener);
+        popup.setOnDismissListener(emojiDismissListener);
+        emojiconButton.setOnClickListener(emojiClickListener);
     }
 
     @Override
@@ -137,6 +158,11 @@ public class ConversationView extends LinearLayout implements ConversationDispla
         sendButton.setOnClickListener(null);
         messageEditText.removeTextChangedListener(textWatcher);
         toolbar.setOnMenuItemClickListener(null);
+        popup.setOnSoftKeyboardOpenCloseListener(null);
+        popup.setOnEmojiconClickedListener(null);
+        popup.setOnEmojiconBackspaceClickedListener(null);
+        popup.setOnDismissListener(null);
+        emojiconButton.setOnClickListener(null);
         this.actionListener = null;
     }
 
@@ -181,5 +207,86 @@ public class ConversationView extends LinearLayout implements ConversationDispla
             actionListener.onUpPressed();
         }
     };
+
+    private final EmojiconsPopup.OnSoftKeyboardOpenCloseListener softKeyboardOpenCloseListener = new EmojiconsPopup.OnSoftKeyboardOpenCloseListener() {
+
+        @Override
+        public void onKeyboardOpen(int keyBoardHeight) {
+
+        }
+
+        @Override
+        public void onKeyboardClose() {
+            if(popup.isShowing())
+                popup.dismiss();
+        }
+    };
+
+    private final EmojiconGridView.OnEmojiconClickedListener emojiconClickedListener = new EmojiconGridView.OnEmojiconClickedListener() {
+
+        @Override
+        public void onEmojiconClicked(Emojicon emojicon) {
+            if (messageEditText == null || emojicon == null) {
+                return;
+            }
+
+            int start = messageEditText.getSelectionStart();
+            int end = messageEditText.getSelectionEnd();
+            if (start < 0) {
+                messageEditText.append(emojicon.getEmoji());
+            } else {
+                messageEditText.getText().replace(Math.min(start, end),
+                        Math.max(start, end), emojicon.getEmoji(), 0,
+                        emojicon.getEmoji().length());
+            }
+        }
+    };
+
+    private final EmojiconsPopup.OnEmojiconBackspaceClickedListener emojiconBackspaceClickedListener = new EmojiconsPopup.OnEmojiconBackspaceClickedListener() {
+
+        @Override
+        public void onEmojiconBackspaceClicked(View v) {
+            KeyEvent event = new KeyEvent(
+                    0, 0, 0, KeyEvent.KEYCODE_DEL, 0, 0, 0, 0, KeyEvent.KEYCODE_ENDCALL);
+            messageEditText.dispatchKeyEvent(event);
+        }
+    };
+
+    private final OnClickListener emojiClickListener = new OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+
+            if(!popup.isShowing()){
+                if(popup.isKeyBoardOpen()){
+                    popup.showAtBottom();
+                    changeEmojiKeyboardIcon(emojiconButton, R.drawable.ic_menu_keyboard);
+                }
+
+                else{
+                    messageEditText.setFocusableInTouchMode(true);
+                    messageEditText.requestFocus();
+                    popup.showAtBottomPending();
+                    final InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.showSoftInput(messageEditText, InputMethodManager.SHOW_IMPLICIT);
+                    changeEmojiKeyboardIcon(emojiconButton, R.drawable.ic_menu_keyboard);
+                }
+            } else{
+                popup.dismiss();
+            }
+        }
+    };
+
+    private final PopupWindow.OnDismissListener emojiDismissListener = new PopupWindow.OnDismissListener() {
+
+        @Override
+        public void onDismiss() {
+            changeEmojiKeyboardIcon(emojiconButton, R.drawable.ic_menu_emoticon);
+        }
+    };
+
+    private void changeEmojiKeyboardIcon(ImageView iconToBeChanged, int drawableResourceId){
+        iconToBeChanged.setImageResource(drawableResourceId);
+    }
 
 }

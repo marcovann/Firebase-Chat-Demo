@@ -11,6 +11,7 @@ import com.myprojects.marco.firechat.conversation.view.ConversationDisplayer;
 import com.myprojects.marco.firechat.conversation.view.ConversationView;
 import com.myprojects.marco.firechat.navigation.AndroidNavigator;
 
+
 /**
  * Created by marco on 29/07/16.
  */
@@ -21,11 +22,13 @@ public class ConversationActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         ConversationDisplayer conversationDisplayer = (ConversationView) findViewById(R.id.conversationView);
         presenter = new ConversationPresenter(
+                Dependencies.INSTANCE.getLoginService(),
                 Dependencies.INSTANCE.getConversationService(),
                 conversationDisplayer,
                 Dependencies.INSTANCE.getUserService(),
@@ -51,4 +54,5 @@ public class ConversationActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
     }
+
 }

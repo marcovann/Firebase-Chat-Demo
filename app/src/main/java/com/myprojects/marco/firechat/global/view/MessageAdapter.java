@@ -13,7 +13,6 @@ import com.myprojects.marco.firechat.user.data_model.User;
 import com.myprojects.marco.firechat.user.data_model.Users;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by marco on 08/08/16.

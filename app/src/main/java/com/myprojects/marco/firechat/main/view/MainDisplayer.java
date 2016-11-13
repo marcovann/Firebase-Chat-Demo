@@ -10,19 +10,25 @@ import com.myprojects.marco.firechat.user.data_model.User;
 
 public interface MainDisplayer {
 
-    void attach(DrawerActionListener drawerActionListener, NavigationActionListener navigationActionListener);
+    void attach(DrawerActionListener drawerActionListener, NavigationActionListener navigationActionListener, SearchActionListener searchActionListener);
 
-    void detach(DrawerActionListener drawerActionListener, NavigationActionListener navigationActionListener);
+    void detach(DrawerActionListener drawerActionListener, NavigationActionListener navigationActionListener, SearchActionListener searchActionListener);
 
     void setTitle(String title);
 
     void setUser(User user);
 
+    void inflateMenu();
+
+    void clearMenu();
+
+    boolean onBackPressed();
+
     void openDrawer();
 
     void closeDrawer();
 
-    public interface DrawerActionListener {
+    interface DrawerActionListener {
 
         void onHeaderSelected();
 
@@ -33,6 +39,12 @@ public interface MainDisplayer {
     interface NavigationActionListener {
 
         void onHamburgerPressed();
+
+    }
+
+    interface SearchActionListener {
+
+        void showFilteredUsers(String text);
 
     }
 

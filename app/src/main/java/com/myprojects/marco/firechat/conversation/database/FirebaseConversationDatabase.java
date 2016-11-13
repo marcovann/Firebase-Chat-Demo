@@ -1,8 +1,10 @@
 package com.myprojects.marco.firechat.conversation.database;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.myprojects.marco.firechat.Constants;
 import com.myprojects.marco.firechat.conversation.data_model.Chat;
 import com.myprojects.marco.firechat.conversation.data_model.Message;
@@ -59,7 +61,7 @@ public class FirebaseConversationDatabase implements ConversationDatabase {
                     Message message = child.getValue(Message.class);
                     messages.add(message);
                 }
-                return new Chat(messages);
+                return new Chat(messages);//.sortedByDate();
             }
         };
     }

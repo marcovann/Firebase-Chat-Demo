@@ -10,11 +10,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/linearLayout"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:scrollbars="vertical"
             />
 
-        <LinearLayout
+        <RelativeLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -23,30 +22,42 @@
             android:elevation="10dp"
             android:id="@+id/linearLayout">
 
-            <EditText
-                android:id="@+id/messageEditText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:hint="@string/chat.hint.message"
-                android:inputType="textCapSentences"
-                android:background="@drawable/bg_msg_bar"
+            <ImageButton
+                android:id="@+id/emoticonButton"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_menu_emoticon"
+                android:background="@drawable/btn_white"
+                android:clickable="false"
                 />
 
             <ImageButton
                 android:id="@+id/sendButton"
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
-                android:paddingLeft="5dp"
+                android:paddingStart="5dp"
                 android:enabled="false"
                 android:src="@drawable/ic_menu_send"
                 android:background="@drawable/btn_selector"
                 android:clickable="false"
+                android:layout_alignParentEnd="true"
                 />
 
-        </LinearLayout>
+            <github.ankushsachdeva.emojicon.EmojiconEditText
+                android:id="@+id/messageEditText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:hint="@string/chat.hint.message"
+                android:inputType="textCapSentences"
+                android:background="@drawable/bg_msg_bar"
+                android:layout_toEndOf="@+id/emoticonButton"
+                android:layout_toStartOf="@id/sendButton"
+                />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

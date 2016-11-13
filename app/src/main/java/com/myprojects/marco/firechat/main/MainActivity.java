@@ -28,8 +28,8 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         MainDisplayer mainDisplayer = (MainDisplayer) findViewById(R.id.mainView);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         GoogleApiClient googleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
@@ -44,7 +44,8 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
                 Dependencies.INSTANCE.getMainService(),
                 Dependencies.INSTANCE.getMessagingService(),
                 navigator,
-                Dependencies.INSTANCE.getFirebaseToken()
+                Dependencies.INSTANCE.getFirebaseToken(),
+                this
                 );
     }
 
@@ -57,9 +58,10 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
 
     @Override
     public void onBackPressed() {
-        if (!navigator.onBackPressed()) {
-            super.onBackPressed();
-        }
+        if (!presenter.onBackPressed())
+            if (!navigator.onBackPressed()) {
+                super.onBackPressed();
+            }
     }
 
     @Override
@@ -78,5 +80,6 @@ public class MainActivity extends BaseActivity implements GoogleApiClient.OnConn
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         // DO SOMETHING
     }
+
 }
 

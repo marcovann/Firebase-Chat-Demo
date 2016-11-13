@@ -3,6 +3,7 @@ package com.myprojects.marco.firechat.conversation.presenter;
 import com.myprojects.marco.firechat.conversation.data_model.Message;
 import com.myprojects.marco.firechat.conversation.service.ConversationService;
 import com.myprojects.marco.firechat.conversation.view.ConversationDisplayer;
+import com.myprojects.marco.firechat.login.service.LoginService;
 import com.myprojects.marco.firechat.navigation.Navigator;
 import com.myprojects.marco.firechat.user.data_model.User;
 import com.myprojects.marco.firechat.user.service.UserService;
@@ -16,9 +17,11 @@ import rx.Subscription;
 
 public class ConversationPresenter {
 
+    private final LoginService loginService;
     private final ConversationService conversationService;
     private final ConversationDisplayer conversationDisplayer;
     private final UserService userService;
+    //private final Analytics analytics;
     private final String self;
     private final String destination;
     private final Navigator navigator;
@@ -28,13 +31,16 @@ public class ConversationPresenter {
     private Subscription typingSubscription;
 
     public ConversationPresenter(
+            LoginService loginService,
             ConversationService conversationService,
             ConversationDisplayer conversationDisplayer,
             UserService userService,
             String self,
             String destination,
-            Navigator navigator
+            //Analytics analytics,
+            Navigator navigator//,
     ) {
+        this.loginService = loginService;
         this.conversationService = conversationService;
         this.conversationDisplayer = conversationDisplayer;
         this.userService = userService;
@@ -143,6 +149,7 @@ public class ConversationPresenter {
         @Override
         public void onSubmitMessage(String message) {
             conversationService.sendMessage(self, new Message(self, destination, message));
+            //analytics.trackMessageLength(message.length(), self.getId(), channel.getName());
         }
 
     };

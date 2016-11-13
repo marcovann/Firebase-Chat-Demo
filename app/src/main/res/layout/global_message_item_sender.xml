@@ -1,10 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="4dp"
     android:layout_marginBottom="4dp"
-    android:layout_marginStart="40dp"
+    android:layout_marginStart="35dp"
+    android:layout_marginEnd="5dp"
     android:gravity="end">
 
     <RelativeLayout
@@ -25,7 +27,7 @@
             android:gravity="center_vertical"
             android:background="@drawable/bg_msg_to">
 
-            <TextView
+            <github.ankushsachdeva.emojicon.EmojiconTextView
                 android:id="@+id/messageTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -71,7 +73,7 @@
 
         </LinearLayout>
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/profileImageView"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -79,6 +81,8 @@
             android:layout_marginStart="8dp"
             android:layout_toRightOf="@+id/messageLayout"
             android:src="@drawable/ic_account_circle_black"
+            app:civ_border_width="0dp"
+            app:civ_shadow_radius="0"
             />
 
     </RelativeLayout>

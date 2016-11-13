@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
+import com.crashlytics.android.Crashlytics;
 import com.myprojects.marco.firechat.BaseActivity;
 import com.myprojects.marco.firechat.Dependencies;
 import com.myprojects.marco.firechat.R;
@@ -11,6 +12,8 @@ import com.myprojects.marco.firechat.login.presenter.LoginPresenter;
 import com.myprojects.marco.firechat.login.view.LoginDisplayer;
 import com.myprojects.marco.firechat.navigation.AndroidLoginNavigator;
 import com.myprojects.marco.firechat.navigation.AndroidNavigator;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by marco on 27/07/16.
@@ -24,6 +27,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_login);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         LoginDisplayer loginDisplayer = (LoginDisplayer) findViewById(R.id.loginView);

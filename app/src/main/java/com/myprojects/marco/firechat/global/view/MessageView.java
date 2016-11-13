@@ -8,12 +8,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.myprojects.marco.firechat.R;
 import com.myprojects.marco.firechat.Utils;
 import com.myprojects.marco.firechat.global.data_model.Message;
 import com.myprojects.marco.firechat.user.data_model.User;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+import github.ankushsachdeva.emojicon.EmojiconTextView;
 
 /**
  * Created by marco on 08/08/16.
@@ -21,9 +22,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageView extends LinearLayout {
 
-    private CircleImageView profileImageView;
+    private CircularImageView profileImageView;
     private TextView dateTextView;
-    private TextView messageTextView;
+    private EmojiconTextView messageTextView;
     private TextView messengerTextView;
     private TextView timestampTextView;
     private RelativeLayout timeLayout;
@@ -51,9 +52,9 @@ public class MessageView extends LinearLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         View.inflate(getContext(), layoutResId, this);
-        this.profileImageView = (CircleImageView) this.findViewById(R.id.profileImageView);
+        this.profileImageView = (CircularImageView) this.findViewById(R.id.profileImageView);
         this.dateTextView = (TextView) this.findViewById(R.id.dateTextView);
-        this.messageTextView = (TextView) this.findViewById(R.id.messageTextView);
+        this.messageTextView = (EmojiconTextView) this.findViewById(R.id.messageTextView);
         this.messengerTextView = (TextView) this.findViewById(R.id.messengerTextView);
         this.timestampTextView = (TextView) this.findViewById(R.id.timeTextView);
         //this.timeLayout = (RelativeLayout) this.findViewById(R.id.timeLayout);

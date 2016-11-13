@@ -28,6 +28,7 @@ public class ConversationListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_conversations, container, false);
         getActivity().setTitle(R.string.conversations_toolbar_title);
+
         navigator = new AndroidConversationsNavigator((AppCompatActivity)getActivity(),new AndroidNavigator(getActivity()));
         presenter = new ConversationListPresenter(
                 (ConversationListDisplayer) rootView.findViewById(R.id.conversationsView),

@@ -7,6 +7,7 @@ package com.myprojects.marco.firechat;
 public class Constants {
 
     public static final String FIREBASE_USERS = "users";
+    public static final String FIREBASE_MESSAGES = "messages";
     public static final String FIREBASE_GLOBALMESSAGES = "globalmessages";
     public static final String FIREBASE_FCM = "fcm";
     public static final String FIREBASE_CHAT = "chat";
@@ -22,5 +23,7 @@ public class Constants {
 
     public static final String FIREBASE_CHAT_MESSAGES = "messages";
     public static final String FIREBASE_CHAT_TYPING = "typing";
+    public static final String FIREBASE_CHAT_IP_ADDRESS = "ip_address";
+
 
 }

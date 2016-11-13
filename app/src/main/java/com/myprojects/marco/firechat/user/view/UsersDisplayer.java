@@ -21,4 +21,6 @@ public interface UsersDisplayer {
 
     }
 
+    void filter(String text);
+
 }

@@ -3,8 +3,6 @@ package com.myprojects.marco.firechat.user.service;
 import com.myprojects.marco.firechat.user.data_model.User;
 import com.myprojects.marco.firechat.user.data_model.Users;
 
-import java.util.List;
-
 import rx.Observable;
 
 /**

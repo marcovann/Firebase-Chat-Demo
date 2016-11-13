@@ -7,11 +7,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.myprojects.marco.firechat.R;
 import com.myprojects.marco.firechat.Utils;
 import com.myprojects.marco.firechat.user.data_model.User;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by marco on 19/08/16.
@@ -20,7 +19,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class UserView extends FrameLayout {
 
     private TextView nameTextView;
-    private CircleImageView profileImageView;
+    private CircularImageView profileImageView;
 
     private int layoutResId;
 
@@ -45,7 +44,7 @@ public class UserView extends FrameLayout {
         super.onFinishInflate();
         View.inflate(getContext(), layoutResId, this);
         nameTextView = (TextView) this.findViewById(R.id.nameTextView);
-        profileImageView = (CircleImageView) this.findViewById(R.id.profileImageView);
+        profileImageView = (CircularImageView) this.findViewById(R.id.profileImageView);
     }
 
     public void display(User user) {

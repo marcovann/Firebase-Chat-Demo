@@ -1,39 +1,56 @@
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/conversationMessageLayout"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="4dp"
     android:layout_marginBottom="4dp"
-    android:layout_marginEnd="40dp"
-    android:padding="4dp"
-    android:layout_below="@+id/txtDate"
-    android:visibility="visible"
-    android:background="@drawable/bg_msg_from">
+    android:layout_marginStart="5dp"
+    android:layout_marginEnd="25dp"
+    android:gravity="start">
 
-    <TextView
-        android:id="@+id/message"
-        android:layout_width="wrap_content"
+    <TableLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:textSize="18sp"
-        android:layout_marginTop="0dp"
-        />
+        android:shrinkColumns="0">
 
-    <TextView
-        android:id="@+id/time"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/darker_gray"
-        android:padding="4dp"
-        android:textSize="12sp"
-        android:textStyle="italic"
-        android:layout_gravity="bottom"
-        android:layout_alignEnd="@id/message"
-        android:layout_alignBottom="@id/message"
-        />
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
 
-</RelativeLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_msg_from">
+
+                <github.ankushsachdeva.emojicon.EmojiconTextView
+                    android:id="@+id/message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="50dp"
+                    android:paddingLeft="14dp"
+                    android:paddingRight="14dp"
+                    android:paddingTop="9dp"
+                    android:paddingBottom="9dp"
+                    android:textSize="18sp"
+                    />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/darker_gray"
+                android:padding="4dp"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:layout_gravity="bottom"
+                />
+
+        </TableRow>
+
+    </TableLayout>
+
+</LinearLayout>

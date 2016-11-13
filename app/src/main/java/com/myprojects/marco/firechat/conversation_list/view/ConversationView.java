@@ -7,11 +7,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.myprojects.marco.firechat.R;
 import com.myprojects.marco.firechat.Utils;
 import com.myprojects.marco.firechat.conversation_list.data_model.Conversation;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by marco on 29/07/16.
@@ -22,7 +21,7 @@ public class ConversationView extends FrameLayout {
     private TextView nameTextView;
     private TextView messageTextView;
     private TextView timeTextView;
-    private CircleImageView profileImageView;
+    private CircularImageView profileImageView;
 
     private int layoutResId;
 
@@ -49,7 +48,7 @@ public class ConversationView extends FrameLayout {
         nameTextView = (TextView) this.findViewById(R.id.nameTextView);
         messageTextView = (TextView) this.findViewById(R.id.messageTextView);
         timeTextView = (TextView) this.findViewById(R.id.timeTextView);
-        profileImageView = (CircleImageView) this.findViewById(R.id.profileImageView);
+        profileImageView = (CircularImageView) this.findViewById(R.id.profileImageView);
     }
 
     public void display(Conversation conversation) {

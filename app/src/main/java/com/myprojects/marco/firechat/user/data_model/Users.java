@@ -21,6 +21,12 @@ public class Users {
         return users;
     }
 
+    public void remove(User u) {
+        if (users.contains(u)) {
+            users.remove(u);
+        }
+    }
+
     public int size() {
         return users.size() ;
     }

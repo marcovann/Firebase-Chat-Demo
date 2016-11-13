@@ -16,9 +16,9 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.myprojects.marco.firechat.Dependencies;
 import com.myprojects.marco.firechat.R;
 import com.myprojects.marco.firechat.conversation_list.ConversationListFragment;
-import com.myprojects.marco.firechat.firstlogin.UserFirstLoginActivity;
 import com.myprojects.marco.firechat.global.GlobalFragment;
 import com.myprojects.marco.firechat.login.LoginActivity;
+import com.myprojects.marco.firechat.firstlogin.UserFirstLoginActivity;
 import com.myprojects.marco.firechat.profile.ProfileActivity;
 import com.myprojects.marco.firechat.user.UsersFragment;
 
@@ -86,7 +86,6 @@ public class AndroidMainNavigator implements MainNavigator {
 
     @Override
     public void toUserList() {
-        // TODO usersfragment to mvp
         UsersFragment usersFragment = new UsersFragment();
         activity.getSupportFragmentManager()
                 .beginTransaction()

@@ -25,8 +25,9 @@ public class GlobalFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_global, container, false);
-        getActivity().setTitle(R.string.global_toolbar_title);
         GlobalDisplayer globalDisplayer = (GlobalDisplayer) rootView.findViewById(R.id.globalView);
+        getActivity().setTitle(R.string.global_toolbar_title);
+
         navigator = new AndroidNavigator(getActivity());
         presenter = new GlobalPresenter(
                 Dependencies.INSTANCE.getLoginService(),

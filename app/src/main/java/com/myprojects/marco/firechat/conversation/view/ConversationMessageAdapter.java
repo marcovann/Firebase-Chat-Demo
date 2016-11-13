@@ -1,7 +1,6 @@
 package com.myprojects.marco.firechat.conversation.view;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -47,7 +46,6 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter<Conversatio
     @Override
     public ConversationMessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ConversationMessageView messageView;
-        Log.d("LOL",viewType + "");
         if (viewType == VIEW_TYPE_MESSAGE_THIS_USER) {
             messageView = (ConversationMessageView) inflater.inflate(R.layout.conversation_message_item_destination_view, parent, false);
         } else if (viewType == VIEW_TYPE_MESSAGE_OTHER_USERS) {

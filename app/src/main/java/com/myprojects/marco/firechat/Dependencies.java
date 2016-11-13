@@ -2,10 +2,13 @@ package com.myprojects.marco.firechat;
 
 import android.content.Context;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
+import com.myprojects.marco.firechat.analytics.Analytics;
+import com.myprojects.marco.firechat.analytics.FirebaseAnalyticsAnalytics;
 import com.myprojects.marco.firechat.conversation.database.FirebaseConversationDatabase;
 import com.myprojects.marco.firechat.conversation.service.ConversationService;
 import com.myprojects.marco.firechat.conversation.service.PersistedConversationService;
@@ -41,6 +44,9 @@ import com.myprojects.marco.firechat.user.service.UserService;
 public enum Dependencies {
     INSTANCE;
 
+    private Analytics analytics;
+    //private ErrorLogger errorLogger;
+
     private RegistrationService registrationService;
     private LoginService loginService;
     private ConversationListService conversationListService;
@@ -52,6 +58,7 @@ public enum Dependencies {
     private CloudMessagingService messagingService;
     private StorageService storageService;
     private String firebaseToken;
+    //private Config config;
 
     private boolean setPersistence = false;
 
@@ -73,6 +80,9 @@ public enum Dependencies {
             FirebaseConversationDatabase conversationDatabase = new FirebaseConversationDatabase(firebaseDatabase, firebaseObservableListeners);
             FirebaseConversationListDatabase conversationListDatabase = new FirebaseConversationListDatabase(firebaseDatabase,firebaseObservableListeners);
 
+//
+            analytics = new FirebaseAnalyticsAnalytics(FirebaseAnalytics.getInstance(appContext));
+//            errorLogger = new FirebaseErrorLogger();
             loginService = new FirebaseLoginService(new FirebaseAuthDatabase(firebaseAuth),messagingDatabase);
             registrationService = new FirebaseRegistrationService(firebaseAuth);
             conversationService = new PersistedConversationService(conversationDatabase);
@@ -81,8 +91,10 @@ public enum Dependencies {
             conversationListService = new PersistedConversationListService(conversationListDatabase,conversationDatabase,userDatabase);
             mainService = new PersistedMainService(firebaseAuth, userDatabase, messagingDatabase);
             profileService = new FirebaseProfileService(firebaseAuth);
+
             messagingService = new FirebaseCloudMessagingService(messagingDatabase);
             storageService = new FirebaseStorageService(firebaseStorage,firebaseObservableListeners);
+//            config = FirebaseConfig.newInstance().init(errorLogger);
         }
     }
 
@@ -95,11 +107,19 @@ public enum Dependencies {
 
     private boolean needsInitialisation() {
         return loginService == null || conversationListService == null || conversationService == null || registrationService == null
-                || userService == null;
+                || userService == null;// || analytics == null || errorLogger == null;
     }
+
+   /* public Analytics getAnalytics() {
+        return analytics;
+    }*/
 
     public String getFirebaseToken() {
         return firebaseToken;
+    }
+
+    public void initFirebaseToken() {
+        firebaseToken = FirebaseInstanceId.getInstance().getToken();
     }
 
     public MainService getMainService() {
@@ -142,4 +162,11 @@ public enum Dependencies {
         return storageService;
     }
 
+    /*public ErrorLogger getErrorLogger() {
+        return errorLogger;
+    }
+
+    public Config getConfig() {
+        return config;
+    }*/
 }

@@ -11,11 +11,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.myprojects.marco.firechat.R;
 import com.myprojects.marco.firechat.Utils;
 import com.myprojects.marco.firechat.user.data_model.User;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by marco on 16/08/16.
@@ -24,16 +24,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainView extends CoordinatorLayout implements MainDisplayer {
 
     private Toolbar toolbar;
+    private MaterialSearchView searchView;
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private NavigationView logoutView;
-    private CircleImageView profileImageView;
+    private CircularImageView profileImageView;
     private TextView nameTextView;
     private TextView emailTextView;
 
     private DrawerActionListener drawerActionListener;
     private NavigationActionListener navigationActionListener;
+    private SearchActionListener searchActionListener;
 
     public MainView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -51,16 +53,19 @@ public class MainView extends CoordinatorLayout implements MainDisplayer {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         logoutView = (NavigationView) navigationView.findViewById(R.id.logout_view);
         View headerLayout = navigationView.getHeaderView(0);
-        profileImageView = (CircleImageView) headerLayout.findViewById(R.id.profileImageView);
+        profileImageView = (CircularImageView) headerLayout.findViewById(R.id.profileImageView);
         nameTextView = (TextView) headerLayout.findViewById(R.id.nameTextView);
         emailTextView = (TextView) headerLayout.findViewById(R.id.emailTextView);
+
+        searchView = (MaterialSearchView) findViewById(R.id.search_view);
     }
 
     @Override
-    public void attach(final DrawerActionListener drawerActionListener, NavigationActionListener navigationActionListener) {
+    public void attach(final DrawerActionListener drawerActionListener, NavigationActionListener navigationActionListener, SearchActionListener searchActionListener) {
 
         this.drawerActionListener = drawerActionListener;
         this.navigationActionListener = navigationActionListener;
+        this.searchActionListener = searchActionListener;
 
         drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
@@ -93,7 +98,7 @@ public class MainView extends CoordinatorLayout implements MainDisplayer {
     }
 
     @Override
-    public void detach(DrawerActionListener drawerActionListener, NavigationActionListener navigationActionListener) {
+    public void detach(DrawerActionListener drawerActionListener, NavigationActionListener navigationActionListener, SearchActionListener searchActionListener) {
         //drawer.removeDrawerListener();
         navigationView.setNavigationItemSelectedListener(null);
         logoutView.setNavigationItemSelectedListener(null);
@@ -113,6 +118,31 @@ public class MainView extends CoordinatorLayout implements MainDisplayer {
         Utils.loadImageElseWhite(user.getImage(),profileImageView,getContext());
         nameTextView.setText(user.getName());
         emailTextView.setText(user.getEmail());
+    }
+
+    @Override
+    public void inflateMenu() {
+        if (!toolbar.getMenu().hasVisibleItems()) {
+            toolbar.inflateMenu(R.menu.fragment_users_itemlist);
+            searchView.setOnQueryTextListener(queryTextListener);
+
+            MenuItem item = toolbar.getMenu().findItem(R.id.search_user);
+            searchView.setMenuItem(item);
+        }
+    }
+
+    @Override
+    public void clearMenu() {
+        toolbar.getMenu().clear();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (searchView.isSearchOpen()) {
+            searchView.closeSearch();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -144,6 +174,19 @@ public class MainView extends CoordinatorLayout implements MainDisplayer {
         @Override
         public void onClick(View v) {
             navigationActionListener.onHamburgerPressed();
+        }
+    };
+
+    private MaterialSearchView.OnQueryTextListener queryTextListener = new MaterialSearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            searchActionListener.showFilteredUsers(newText);
+            return false;
         }
     };
 

@@ -1,14 +1,30 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+
+}
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 24
     buildToolsVersion "23.0.3"
     defaultConfig {
         applicationId "com.myprojects.marco.firechat"
-        minSdkVersion 19
+        minSdkVersion 17
         targetSdkVersion 24
-        versionCode 3
-        versionName "1.0.3"
+        versionCode 34
+        versionName "1.0.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -24,17 +40,15 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
-    compile 'com.android.support:appcompat-v7:25.0.0'
-    compile 'com.android.support:design:25.0.0'
-    compile 'com.android.support:support-v4:25.0.0'
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:support-v4:24.2.1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
-
     compile 'com.google.android.gms:play-services-auth:9.4.0'
     compile 'com.google.firebase:firebase-auth:9.4.0'
     compile 'com.google.firebase:firebase-config:9.4.0'
@@ -44,13 +58,15 @@ dependencies {
     compile 'com.google.firebase:firebase-storage:9.4.0'
     compile 'com.google.firebase:firebase-invites:9.4.0'
     compile 'com.google.firebase:firebase-crash:9.4.0'
-
-    compile 'com.afollestad.material-dialogs:core:0.8.6.1'
-    compile 'de.hdodenhof:circleimageview:2.1.0'
-
-    compile 'com.jakewharton.rxrelay:rxrelay:1.1.0'
-
+    compile 'com.afollestad.material-dialogs:core:0.9.1.0'
+    compile 'com.mikhaellopez:circularimageview:3.0.2'
+    compile 'com.miguelcatalan:materialsearchview:1.4.0'
+    compile 'com.jakewharton.rxrelay:rxrelay:1.2.0'
     testCompile 'junit:junit:4.12'
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
+        transitive = true;
+    }
+    compile project(':emojicon')
 }
 
 apply plugin: 'com.google.gms.google-services'

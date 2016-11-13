@@ -14,6 +14,9 @@ import com.myprojects.marco.firechat.R;
  * Created by marco on 27/07/16.
  */
 
+// Presenter make request to FirebaseLoginService -> FirebaseAuthDatabase -> then I retrieve the model Authentication
+// Activity init all the Firebase vars I need and the LoginView and LoginNavigator
+
 public class LoginView extends CoordinatorLayout implements LoginDisplayer {
 
     private CoordinatorLayout layout;

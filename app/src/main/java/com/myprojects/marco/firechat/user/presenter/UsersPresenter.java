@@ -120,4 +120,8 @@ public class UsersPresenter {
         }
     };
 
+    public void filterUsers(String text) {
+        usersDisplayer.filter(text);
+    }
+
 }

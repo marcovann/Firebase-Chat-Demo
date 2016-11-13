@@ -1,29 +1,13 @@
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/conversationMessageLayout"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="4dp"
     android:layout_marginBottom="4dp"
-    android:layout_marginStart="40dp"
-    android:padding="4dp"
-    android:layout_below="@+id/txtDate"
-    android:visibility="visible"
-    android:orientation="vertical"
-    android:layout_gravity="end"
-    android:background="@drawable/bg_msg_to">
-
-    <TextView
-        android:id="@+id/message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:textSize="18sp"
-        android:layout_marginTop="0dp"
-        />
+    android:layout_marginStart="25dp"
+    android:layout_marginEnd="5dp"
+    android:gravity="end">
 
     <TextView
         android:id="@+id/time"
@@ -34,8 +18,28 @@
         android:textSize="12sp"
         android:textStyle="italic"
         android:layout_gravity="bottom"
-        android:layout_alignEnd="@id/message"
-        android:layout_alignBottom="@id/message"
+        android:text="12:30"
         />
 
-</RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/messageLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_msg_to">
+
+        <github.ankushsachdeva.emojicon.EmojiconTextView
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="50dp"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="9dp"
+            android:paddingBottom="9dp"
+            android:textSize="18sp"
+            android:text="ajsdjhdsahjkadskhj jdsajklsda ljkasd sadjlk sad"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

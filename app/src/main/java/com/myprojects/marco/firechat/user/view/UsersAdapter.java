@@ -9,6 +9,7 @@ import com.myprojects.marco.firechat.user.data_model.User;
 import com.myprojects.marco.firechat.user.data_model.Users;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by marco on 19/08/16.
@@ -28,6 +29,19 @@ public class UsersAdapter extends RecyclerView.Adapter<UserViewHolder> {
         this.users = users;
         this.users = users.sortedByName();
         notifyDataSetChanged();
+    }
+
+    public void filter(String text) {
+        Iterator<User> it = users.getUsers().iterator();
+        while (it.hasNext()) {
+            if (!it.next().getName().toLowerCase().contains(text.toLowerCase()))
+                it.remove();
+        }
+        notifyDataSetChanged();
+    }
+
+    public Users getUsers() {
+        return users;
     }
 
     @Override
