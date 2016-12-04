@@ -45,8 +45,6 @@ public enum Dependencies {
     INSTANCE;
 
     private Analytics analytics;
-    //private ErrorLogger errorLogger;
-
     private RegistrationService registrationService;
     private LoginService loginService;
     private ConversationListService conversationListService;
@@ -80,9 +78,7 @@ public enum Dependencies {
             FirebaseConversationDatabase conversationDatabase = new FirebaseConversationDatabase(firebaseDatabase, firebaseObservableListeners);
             FirebaseConversationListDatabase conversationListDatabase = new FirebaseConversationListDatabase(firebaseDatabase,firebaseObservableListeners);
 
-//
             analytics = new FirebaseAnalyticsAnalytics(FirebaseAnalytics.getInstance(appContext));
-//            errorLogger = new FirebaseErrorLogger();
             loginService = new FirebaseLoginService(new FirebaseAuthDatabase(firebaseAuth),messagingDatabase);
             registrationService = new FirebaseRegistrationService(firebaseAuth);
             conversationService = new PersistedConversationService(conversationDatabase);
@@ -162,10 +158,7 @@ public enum Dependencies {
         return storageService;
     }
 
-    /*public ErrorLogger getErrorLogger() {
-        return errorLogger;
-    }
-
+    /*
     public Config getConfig() {
         return config;
     }*/

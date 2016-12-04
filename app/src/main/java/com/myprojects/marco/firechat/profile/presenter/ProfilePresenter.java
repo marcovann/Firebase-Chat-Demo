@@ -97,7 +97,8 @@ public class ProfilePresenter {
 
         @Override
         public void onNamePressed(String hint, TextView textView) {
-            navigator.showInputTextDialog(hint,textView,self);
+            if (self != null)
+                navigator.showInputTextDialog(hint,textView,self);
         }
 
         @Override

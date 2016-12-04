@@ -86,11 +86,11 @@ public class AndroidLoginNavigator implements LoginNavigator {
             return false;
         }
         GoogleSignInResult result = googleApiClient.getSignInResultFromIntent(data);
-        if (result.isSuccess()) {
+        if (result != null && result.isSuccess()) {
             GoogleSignInAccount account = result.getSignInAccount();
             loginResultListener.onGoogleLoginSuccess(account.getIdToken());
         } else {
-            Log.e("Failed auth GooglePlus", result.getStatus().getStatusCode()+"");
+            Log.e("Failed auth Google", result.getStatus().getStatusCode()+"");
             loginResultListener.onLoginFailed(result.getStatus().getStatusMessage());
         }
         return true;

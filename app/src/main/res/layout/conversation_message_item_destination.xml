@@ -34,6 +34,9 @@
                     android:paddingTop="9dp"
                     android:paddingBottom="9dp"
                     android:textSize="18sp"
+                    android:autoLink="web"
+                    android:textColorLink="@color/colorLink"
+                    android:textIsSelectable="true"
                     />
 
             </RelativeLayout>

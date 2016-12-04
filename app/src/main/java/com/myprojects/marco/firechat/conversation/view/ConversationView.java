@@ -17,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.mikhaellopez.circularimageview.CircularImageView;
 import com.myprojects.marco.firechat.R;
 import com.myprojects.marco.firechat.Utils;
 import com.myprojects.marco.firechat.conversation.data_model.Chat;
@@ -26,6 +25,7 @@ import com.myprojects.marco.firechat.conversation.data_model.Message;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import github.ankushsachdeva.emojicon.EmojiconEditText;
 import github.ankushsachdeva.emojicon.EmojiconGridView;
 import github.ankushsachdeva.emojicon.EmojiconsPopup;
@@ -46,7 +46,7 @@ public class ConversationView extends LinearLayout implements ConversationDispla
     private ImageButton emojiconButton;
 
     private Toolbar toolbar;
-    private CircularImageView profileImageView;
+    private CircleImageView profileImageView;
     private TextView nameTextView;
     private TextView lastSeenTextView;
     private TextView typingTextView;
@@ -73,7 +73,7 @@ public class ConversationView extends LinearLayout implements ConversationDispla
         emojiconButton = (ImageButton) this.findViewById(R.id.emoticonButton);
 
         toolbar = (Toolbar) this.findViewById(R.id.toolbar);
-        profileImageView = (CircularImageView) toolbar.findViewById(R.id.profileImageView);
+        profileImageView = (CircleImageView) toolbar.findViewById(R.id.profileImageView);
         nameTextView = (TextView) toolbar.findViewById(R.id.nameTextView);
         lastSeenTextView = (TextView) toolbar.findViewById(R.id.lastSeenTextView);
         typingTextView = (TextView) this.findViewById(R.id.typingTextView);
@@ -127,7 +127,7 @@ public class ConversationView extends LinearLayout implements ConversationDispla
             }
         }
 
-        typingTextView.setText(user + getResources().getString(R.string.chat_textview_typing));
+        typingTextView.setText(user + " " + getResources().getString(R.string.chat_textview_typing));
     }
 
     @Override

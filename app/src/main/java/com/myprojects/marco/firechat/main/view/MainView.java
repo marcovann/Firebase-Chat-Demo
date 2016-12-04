@@ -12,10 +12,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
-import com.mikhaellopez.circularimageview.CircularImageView;
 import com.myprojects.marco.firechat.R;
 import com.myprojects.marco.firechat.Utils;
 import com.myprojects.marco.firechat.user.data_model.User;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by marco on 16/08/16.
@@ -29,7 +30,7 @@ public class MainView extends CoordinatorLayout implements MainDisplayer {
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private NavigationView logoutView;
-    private CircularImageView profileImageView;
+    private CircleImageView profileImageView;
     private TextView nameTextView;
     private TextView emailTextView;
 
@@ -53,7 +54,7 @@ public class MainView extends CoordinatorLayout implements MainDisplayer {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         logoutView = (NavigationView) navigationView.findViewById(R.id.logout_view);
         View headerLayout = navigationView.getHeaderView(0);
-        profileImageView = (CircularImageView) headerLayout.findViewById(R.id.profileImageView);
+        profileImageView = (CircleImageView) headerLayout.findViewById(R.id.profileImageView);
         nameTextView = (TextView) headerLayout.findViewById(R.id.nameTextView);
         emailTextView = (TextView) headerLayout.findViewById(R.id.emailTextView);
 

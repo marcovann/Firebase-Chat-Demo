@@ -21,7 +21,6 @@ public class ConversationPresenter {
     private final ConversationService conversationService;
     private final ConversationDisplayer conversationDisplayer;
     private final UserService userService;
-    //private final Analytics analytics;
     private final String self;
     private final String destination;
     private final Navigator navigator;
@@ -37,14 +36,12 @@ public class ConversationPresenter {
             UserService userService,
             String self,
             String destination,
-            //Analytics analytics,
-            Navigator navigator//,
+            Navigator navigator
     ) {
         this.loginService = loginService;
         this.conversationService = conversationService;
         this.conversationDisplayer = conversationDisplayer;
         this.userService = userService;
-        //this.analytics = analytics;
         this.self = self;
         this.destination = destination;
         this.navigator = navigator;
@@ -149,7 +146,6 @@ public class ConversationPresenter {
         @Override
         public void onSubmitMessage(String message) {
             conversationService.sendMessage(self, new Message(self, destination, message));
-            //analytics.trackMessageLength(message.length(), self.getId(), channel.getName());
         }
 
     };

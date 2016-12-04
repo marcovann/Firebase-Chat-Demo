@@ -18,18 +18,15 @@ public class LoginPresenter {
     private final LoginService loginService;
     private final LoginDisplayer loginDisplayer;
     private final LoginNavigator navigator;
-    //private final Analytics analytics;
 
     private Subscription subscription;
 
     public LoginPresenter(LoginService loginService,
                           LoginDisplayer loginDisplayer,
                           LoginNavigator navigator) {
-                          //Analytics analytics) {
         this.loginService = loginService;
         this.loginDisplayer = loginDisplayer;
         this.navigator = navigator;
-        //this.analytics = analytics;
     }
 
     public void startPresenting() {
@@ -68,7 +65,6 @@ public class LoginPresenter {
 
         @Override
         public void onGooglePlusLoginSelected() {
-            //analytics.trackSignInStarted("google");
             navigator.toGooglePlusLogin();
         }
 
@@ -105,7 +101,6 @@ public class LoginPresenter {
 
         @Override
         public void onGoogleLoginSuccess(String tokenId) {
-            //analytics.trackSignInSuccessful("google");
             loginService.loginWithGoogle(tokenId);
         }
 

@@ -8,12 +8,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.mikhaellopez.circularimageview.CircularImageView;
 import com.myprojects.marco.firechat.R;
 import com.myprojects.marco.firechat.Utils;
 import com.myprojects.marco.firechat.global.data_model.Message;
 import com.myprojects.marco.firechat.user.data_model.User;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import github.ankushsachdeva.emojicon.EmojiconTextView;
 
 /**
@@ -22,12 +22,11 @@ import github.ankushsachdeva.emojicon.EmojiconTextView;
 
 public class MessageView extends LinearLayout {
 
-    private CircularImageView profileImageView;
+    private CircleImageView profileImageView;
     private TextView dateTextView;
     private EmojiconTextView messageTextView;
     private TextView messengerTextView;
     private TextView timestampTextView;
-    private RelativeLayout timeLayout;
 
     private int layoutResId;
 
@@ -52,12 +51,11 @@ public class MessageView extends LinearLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         View.inflate(getContext(), layoutResId, this);
-        this.profileImageView = (CircularImageView) this.findViewById(R.id.profileImageView);
+        this.profileImageView = (CircleImageView) this.findViewById(R.id.profileImageView);
         this.dateTextView = (TextView) this.findViewById(R.id.dateTextView);
         this.messageTextView = (EmojiconTextView) this.findViewById(R.id.messageTextView);
         this.messengerTextView = (TextView) this.findViewById(R.id.messengerTextView);
         this.timestampTextView = (TextView) this.findViewById(R.id.timeTextView);
-        //this.timeLayout = (RelativeLayout) this.findViewById(R.id.timeLayout);
     }
 
     public void display(User user, final Message message) {
@@ -68,26 +66,6 @@ public class MessageView extends LinearLayout {
         if (dateTextView != null)
             dateTextView.setText(Utils.getDate(timestamp));
         messageTextView.setText(message.getText());
-//        messageTextView.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (message.getText().length() > 33) {
-//                    RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(
-//                            new RelativeLayout.LayoutParams(
-//                                    RelativeLayout.LayoutParams.MATCH_PARENT,
-//                                    RelativeLayout.LayoutParams.WRAP_CONTENT));
-//                    timeLayout.setLayoutParams(relativeParams);
-//                    timeLayout.requestLayout();
-//                } else {
-//                    RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(
-//                            new RelativeLayout.LayoutParams(
-//                                    RelativeLayout.LayoutParams.WRAP_CONTENT,
-//                                    RelativeLayout.LayoutParams.WRAP_CONTENT));
-//                    timeLayout.setLayoutParams(relativeParams);
-//                    timeLayout.requestLayout();
-//                }
-//            }
-//        });
 
         messengerTextView.setText(user.getName());
         timestampTextView.setText(Utils.getTimestamp(timestamp));

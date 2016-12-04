@@ -18,7 +18,6 @@
         android:textSize="12sp"
         android:textStyle="italic"
         android:layout_gravity="bottom"
-        android:text="12:30"
         />
 
     <RelativeLayout
@@ -37,7 +36,9 @@
             android:paddingTop="9dp"
             android:paddingBottom="9dp"
             android:textSize="18sp"
-            android:text="ajsdjhdsahjkadskhj jdsajklsda ljkasd sadjlk sad"
+            android:autoLink="web"
+            android:textColorLink="@color/colorLink"
+            android:textIsSelectable="true"
             />
 
     </RelativeLayout>

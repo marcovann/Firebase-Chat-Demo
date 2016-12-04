@@ -24,7 +24,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.mikhaellopez.circularimageview.CircularImageView;
 import com.myprojects.marco.firechat.Constants;
 import com.myprojects.marco.firechat.R;
 
@@ -32,6 +31,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by marco on 13/07/16.
@@ -50,7 +51,7 @@ public class UserFirstLoginActivity extends AppCompatActivity
 
     private Toolbar toolbar;
     private EditText nameEditText;
-    private CircularImageView profileImageView;
+    private CircleImageView profileImageView;
     private Button startButton;
 
     private boolean hasImageChanged = false;
@@ -79,7 +80,7 @@ public class UserFirstLoginActivity extends AppCompatActivity
         nameEditText = (EditText) findViewById(R.id.nameEditText);
         if (firebaseUser.getDisplayName() != null && firebaseUser.getDisplayName().length() > 0)
             nameEditText.setText(firebaseUser.getDisplayName());
-        profileImageView = (CircularImageView) findViewById(R.id.profileImageView);
+        profileImageView = (CircleImageView) findViewById(R.id.profileImageView);
         startButton = (Button) findViewById(R.id.startButton);
 
         profileImageView.setOnClickListener(this);

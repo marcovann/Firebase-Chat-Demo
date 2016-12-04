@@ -1,28 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="70dp"
             android:gravity="center_vertical"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="16dp"
             >
 
-            <com.mikhaellopez.circularimageview.CircularImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profileImageView"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
                 android:src="@drawable/ic_account_circle_black"
-                app:civ_border_width="0dp"
-                app:civ_shadow_radius="0"
+                android:layout_centerVertical="true"
+                />
+
+            <TextView
+                android:id="@+id/timeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:textSize="12sp"
                 />
 
             <LinearLayout
@@ -30,20 +38,26 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:layout_marginStart="16dp"
-                android:orientation="vertical">
+                android:layout_marginEnd="8dp"
+                android:orientation="vertical"
+                android:layout_toEndOf="@id/profileImageView"
+                android:layout_toStartOf="@id/timeTextView">
 
                 <TextView
                     android:id="@+id/nameTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="18sp"
                     />
 
                 <TextView
                     android:id="@+id/messageTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:maxEms="12"
+                    android:layout_marginTop="4dp"
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:textAppearance="?android:attr/textAppearanceLarge"
@@ -52,14 +66,7 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/timeTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                />
-
-        </LinearLayout>
+        </RelativeLayout>
 
         <ImageView
             android:layout_width="match_parent"

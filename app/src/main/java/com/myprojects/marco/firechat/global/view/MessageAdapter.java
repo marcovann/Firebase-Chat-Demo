@@ -68,7 +68,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageViewHolder> {
     @Override
     public void onBindViewHolder(MessageViewHolder holder, int position) {
         Message message = chat.get(position);
-        holder.bind(chat.getUser(message.getUid()),message);
+        if (chat.getUser(message.getUid()) != null)
+            holder.bind(chat.getUser(message.getUid()),message);
     }
 
     @Override

@@ -34,4 +34,10 @@ public interface GlobalDisplayer {
 
     }
 
+    interface GlobalMessageListener {
+
+        void onUserSelected();
+
+    }
+
 }

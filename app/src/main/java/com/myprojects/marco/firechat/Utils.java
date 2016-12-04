@@ -5,13 +5,14 @@ import android.content.Context;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.storage.StorageReference;
-import com.mikhaellopez.circularimageview.CircularImageView;
 import com.myprojects.marco.firechat.storage.FirebaseImageLoader;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by marco on 13/07/16.
@@ -76,7 +77,7 @@ public class Utils {
         return null;
     }
 
-    public static void loadImageElseBlack(String image, CircularImageView imageView, Context context) {
+    public static void loadImageElseBlack(String image, CircleImageView imageView, Context context) {
 
         try {
             if (image != null && image.length() > 0) {
@@ -97,7 +98,7 @@ public class Utils {
         }
     }
 
-    public static void loadImageElseWhite(String image, CircularImageView imageView, Context context) {
+    public static void loadImageElseWhite(String image, CircleImageView imageView, Context context) {
 
         try {
             if (image != null && image.length() > 0) {

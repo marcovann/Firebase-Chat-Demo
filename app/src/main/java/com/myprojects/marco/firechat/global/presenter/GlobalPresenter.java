@@ -28,7 +28,6 @@ public class GlobalPresenter {
     private final GlobalDisplayer globalDisplayer;
     private final UserService userService;
     private final Navigator navigator;
-    //private final Analytics analytics;
 
     private User user;
 
@@ -39,15 +38,13 @@ public class GlobalPresenter {
             GlobalService globalService,
             GlobalDisplayer globalDisplayer,
             UserService userService,
-            Navigator navigator//,
-            //Analytics analytics,
+            Navigator navigator
     ) {
         this.loginService = loginService;
         this.globalService = globalService;
         this.globalDisplayer = globalDisplayer;
         this.userService = userService;
         this.navigator = navigator;
-        //this.analytics = analytics;
     }
 
     public void startPresenting() {
@@ -152,7 +149,7 @@ public class GlobalPresenter {
 
         @Override
         public void onMessageLengthChanged(int messageLength) {
-            if (/*userIsAuthenticated() && */messageLength > 0) {
+            if (messageLength > 0) {
                 globalDisplayer.enableInteraction();
             } else {
                 globalDisplayer.disableInteraction();
@@ -163,7 +160,6 @@ public class GlobalPresenter {
         public void onSubmitMessage(String message) {
             if (user != null)
                 globalService.sendMessage(new Message(user.getUid(),message));
-            //analytics.trackMessageLength(message.length(), sender.getId(), channel.getName());
         }
 
     };

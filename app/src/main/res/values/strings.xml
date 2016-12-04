@@ -89,6 +89,7 @@
     <!-- fragment conversations -->
     <string name="conversations.toolbar.title">Conversations</string>
     <string name="conversations.conversation.item.today">Today</string>
+    <string name="conversations.conversation.item.yesterday">Yesterday</string>
 
     <!-- fragment global messages -->
     <string name="global.toolbar.title">Global Room</string>

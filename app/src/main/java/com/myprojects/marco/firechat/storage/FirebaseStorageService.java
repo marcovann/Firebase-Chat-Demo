@@ -35,7 +35,7 @@ public class FirebaseStorageService implements StorageService {
     public Observable<String> uploadImage(Bitmap bitmap) {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
         byte[] data = baos.toByteArray();
         final String imageRef = bitmap.hashCode() + System.currentTimeMillis() + ".jpg";
 

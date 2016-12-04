@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "23.0.3"
+    buildToolsVersion "25.0.1"
     defaultConfig {
         applicationId "com.myprojects.marco.firechat"
         minSdkVersion 17
         targetSdkVersion 24
-        versionCode 34
-        versionName "1.0.4"
+        versionCode 35
+        versionName "1.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -43,11 +43,11 @@ dependencies {
     compile 'com.google.firebase:firebase-invites:9.4.0'
     compile 'com.google.firebase:firebase-crash:9.4.0'
     compile 'com.afollestad.material-dialogs:core:0.9.1.0'
-    compile 'com.mikhaellopez:circularimageview:3.0.2'
+    compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.miguelcatalan:materialsearchview:1.4.0'
     compile 'com.jakewharton.rxrelay:rxrelay:1.2.0'
     testCompile 'junit:junit:4.12'
-    compile project(':emojicon')
+    compile project(':emoticon')
 }
 
 apply plugin: 'com.google.gms.google-services'

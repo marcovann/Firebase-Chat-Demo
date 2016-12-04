@@ -9,10 +9,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.mikhaellopez.circularimageview.CircularImageView;
 import com.myprojects.marco.firechat.R;
 import com.myprojects.marco.firechat.Utils;
 import com.myprojects.marco.firechat.user.data_model.User;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by marco on 09/09/16.
@@ -25,7 +26,7 @@ public class ProfileView extends LinearLayout implements ProfileDisplayer, View.
     private TextView emailTextView;
     private TextView nameTextView;
     private TextView passwordTextView;
-    private CircularImageView profileImageView;
+    private CircleImageView profileImageView;
     private Button removeButton;
 
     private ProfileActionListener actionListener;
@@ -44,7 +45,7 @@ public class ProfileView extends LinearLayout implements ProfileDisplayer, View.
 
         emailTextView = (TextView) findViewById(R.id.emailTextView);
         nameTextView = (TextView) findViewById(R.id.nameTextView);
-        profileImageView = (CircularImageView) findViewById(R.id.profileImageView);
+        profileImageView = (CircleImageView) findViewById(R.id.profileImageView);
         passwordTextView = (TextView) findViewById(R.id.passwordTextView);
         removeButton = (Button) findViewById(R.id.removeButton);
     }

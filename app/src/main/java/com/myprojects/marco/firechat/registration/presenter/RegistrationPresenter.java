@@ -22,14 +22,10 @@ public class RegistrationPresenter {
 
     public RegistrationPresenter(RegistrationService registrationService,
                           RegistrationDisplayer registrationDisplayer,
-                          RegistrationNavigator navigator) {//,
-        //ErrorLogger errorLogger,
-        //Analytics analytics) {
+                          RegistrationNavigator navigator) {
         this.registrationService = registrationService;
         this.registrationDisplayer = registrationDisplayer;
         this.navigator = navigator;
-        //this.errorLogger = errorLogger;
-        //this.analytics = analytics;
     }
 
     public void startPresenting() {

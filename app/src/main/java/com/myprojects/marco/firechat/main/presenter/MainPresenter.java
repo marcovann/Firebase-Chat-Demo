@@ -120,7 +120,7 @@ public class MainPresenter {
 
     public void stopPresenting() {
         mainDisplayer.detach(drawerActionListener,navigationActionListener,searchActionListener);
-        loginSubscription.unsubscribe();
+        if (loginSubscription != null) loginSubscription.unsubscribe();
         if (userSubscription != null) userSubscription.unsubscribe();
         if (messageSubscription != null) messageSubscription.unsubscribe();
     }

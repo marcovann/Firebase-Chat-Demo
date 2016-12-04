@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
         android:orientation="vertical"
@@ -13,7 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.mikhaellopez.circularimageview.CircularImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profileImageView"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
@@ -21,8 +20,6 @@
                 android:layout_marginBottom="16dp"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/ic_account_circle_black"
-                app:civ_border_width="0dp"
-                app:civ_shadow_radius="0"
                 />
 
 
