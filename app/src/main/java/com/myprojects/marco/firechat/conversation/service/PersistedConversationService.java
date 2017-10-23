@@ -21,8 +21,13 @@ public class PersistedConversationService implements ConversationService {
     }
 
     @Override
-    public Observable<Message> syncMessages(String self, String destination) {
-        return conversationDatabase.observeAddMessage(self,destination);
+    public Observable<Chat> getOldMessages(String self, String destination, String key) {
+        return conversationDatabase.observeOldMessages(self,destination,key);
+    }
+
+    @Override
+    public Observable<Message> getNewMessages(String self, String destination, String key) {
+        return conversationDatabase.observeNewMessages(self,destination,key);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.myprojects.marco.firechat.conversation.view;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -11,6 +12,8 @@ import com.myprojects.marco.firechat.conversation.data_model.Chat;
 import com.myprojects.marco.firechat.conversation.data_model.Message;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by marco on 29/07/16.
@@ -37,9 +40,21 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter<Conversatio
         notifyDataSetChanged();
     }
 
+    public void add(Chat chat, String user) {
+        this.self = user;
+        List<Message> messages = chat.getMessages();
+        Collections.reverse(messages);
+        int count = 0;
+        for (Message m: messages) {
+            if (this.chat.add(0, m))
+                count++;
+        }
+        notifyItemRangeInserted(0,count);
+    }
+
     public void add(Message message, String user) {
         this.self = user;
-        this.chat.addMessage(message);
+        this.chat.add(message);
         notifyDataSetChanged();
     }
 

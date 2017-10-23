@@ -1,12 +1,14 @@
 package com.myprojects.marco.firechat.conversation.view;
 
 import android.content.Context;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.myprojects.marco.firechat.EndlessRecyclerViewScrollListener;
 import com.myprojects.marco.firechat.R;
 import com.myprojects.marco.firechat.Utils;
 import com.myprojects.marco.firechat.conversation.data_model.Chat;
@@ -40,6 +43,7 @@ public class ConversationView extends LinearLayout implements ConversationDispla
     private final ConversationMessageAdapter conversationMessageAdapter;
     private EmojiconEditText messageEditText;
     private ImageButton sendButton;
+    private LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
     private RecyclerView messageRecyclerView;
 
     private EmojiconsPopup popup;
@@ -80,11 +84,14 @@ public class ConversationView extends LinearLayout implements ConversationDispla
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
 
         messageRecyclerView = (RecyclerView) this.findViewById(R.id.messageRecyclerView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setStackFromEnd(true);
         messageRecyclerView.setLayoutManager(layoutManager);
         messageRecyclerView.setAdapter(conversationMessageAdapter);
+    }
 
+    @Override
+    public void displayOldMessages(Chat chat, String user) {
+        conversationMessageAdapter.add(chat,user);
     }
 
     @Override
@@ -98,7 +105,7 @@ public class ConversationView extends LinearLayout implements ConversationDispla
     public void addToDisplay(Message message, String user) {
         conversationMessageAdapter.add(message,user);
         int lastMessagePosition = conversationMessageAdapter.getItemCount() == 0 ? 0 : conversationMessageAdapter.getItemCount() - 1;
-        messageRecyclerView.scrollToPosition(lastMessagePosition);
+        messageRecyclerView.smoothScrollToPosition(lastMessagePosition);
     }
 
     @Override
@@ -151,6 +158,7 @@ public class ConversationView extends LinearLayout implements ConversationDispla
         popup.setOnEmojiconBackspaceClickedListener(emojiconBackspaceClickedListener);
         popup.setOnDismissListener(emojiDismissListener);
         emojiconButton.setOnClickListener(emojiClickListener);
+        messageRecyclerView.addOnScrollListener(scrollListener);
     }
 
     @Override
@@ -163,6 +171,7 @@ public class ConversationView extends LinearLayout implements ConversationDispla
         popup.setOnEmojiconBackspaceClickedListener(null);
         popup.setOnDismissListener(null);
         emojiconButton.setOnClickListener(null);
+        messageRecyclerView.removeOnScrollListener(scrollListener);
         this.actionListener = null;
     }
 
@@ -206,6 +215,15 @@ public class ConversationView extends LinearLayout implements ConversationDispla
         public void onClick(View v) {
             actionListener.onUpPressed();
         }
+    };
+
+    private final EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+
+        @Override
+        public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+            actionListener.onPullMessages();
+        }
+
     };
 
     private final EmojiconsPopup.OnSoftKeyboardOpenCloseListener softKeyboardOpenCloseListener = new EmojiconsPopup.OnSoftKeyboardOpenCloseListener() {

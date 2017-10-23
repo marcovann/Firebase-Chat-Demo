@@ -12,6 +12,7 @@ public class Message {
     private String destination;
     private String message;
     private String timestamp;
+    private String id;
 
     public Message() {}
 
@@ -36,6 +37,14 @@ public class Message {
 
     public String getTimestamp() {
         return timestamp;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override

@@ -1,8 +1,10 @@
 package com.myprojects.marco.firechat.global.presenter;
 
-import com.myprojects.marco.firechat.database.DatabaseResult;
+import android.util.Pair;
+
 import com.myprojects.marco.firechat.global.data_model.Chat;
 import com.myprojects.marco.firechat.global.data_model.Message;
+import com.myprojects.marco.firechat.global.database.FirebaseGlobalDatabase;
 import com.myprojects.marco.firechat.global.service.GlobalService;
 import com.myprojects.marco.firechat.global.view.GlobalDisplayer;
 import com.myprojects.marco.firechat.login.data_model.Authentication;
@@ -12,9 +14,9 @@ import com.myprojects.marco.firechat.user.data_model.User;
 import com.myprojects.marco.firechat.user.data_model.Users;
 import com.myprojects.marco.firechat.user.service.UserService;
 
+import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
-import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.functions.Func2;
 
 /**
@@ -29,9 +31,8 @@ public class GlobalPresenter {
     private final UserService userService;
     private final Navigator navigator;
 
+    private String currentKey;
     private User user;
-
-    private Subscription subscription;
 
     public GlobalPresenter(
             LoginService loginService,
@@ -51,68 +52,50 @@ public class GlobalPresenter {
         globalDisplayer.attach(actionListener);
         globalDisplayer.disableInteraction();
 
-        final Subscriber messagesSubscriber = new Subscriber<Message>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(final Message message) {
-                userService.getUser(message.getUid())
-                        .subscribe(new Subscriber<User>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onNext(User sender) {
-                                if (sender != null)
-                                    globalDisplayer.addToDisplay(message,sender,user);
-                            }
-                        });
-            }
-        };
-
-        final Subscriber chatSubscriber = new Subscriber<DatabaseResult<Chat>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(final DatabaseResult<Chat> chatDatabaseResult) {
-                final Chat chat = chatDatabaseResult.getData();
-                userService.getUsers()
-                        .subscribe(new Action1<Users>() {
-                            @Override
-                            public void call(Users users) {
-                                globalDisplayer.display(chat,users,user);
-                                globalService.syncMessages()
-                                    .subscribe(messagesSubscriber);
-                            }
-                        });
-            }
-        };
-
         loginService.getAuthentication()
-                .subscribe(new Subscriber<Authentication>() {
+                .flatMap(new Func1<Authentication, Observable<Chat>>() {
+                    @Override
+                    public Observable<Chat> call(Authentication authentication) {
+                        user = authentication.getUser();
+                        return globalService.getOldMessages(FirebaseGlobalDatabase.LAST_MESSAGE);
+                    }
+                })
+                .flatMap(new Func1<Chat, Observable<Users>>() {
+                             @Override
+                             public Observable<Users> call(Chat chat) {
+                                 return userService.getUsers();
+                             }
+                         }, new Func2<Chat, Users, Pair<Chat, Users>>() {
+                            @Override
+                            public Pair<Chat,Users> call(Chat chat, Users users) {
+                                return new Pair<>(chat,users);
+                            }
+                         }
+                )
+                .flatMap(new Func1<Pair<Chat, Users>, Observable<Message>>() {
+                    @Override
+                    public Observable<Message> call(Pair<Chat, Users> pair) {
+                        Chat chat = pair.first;
+                        Users users = pair.second;
+                        String key = chat.get(chat.size() - 1).getId();
+                        currentKey = chat.getFirstKey();
+                        globalDisplayer.display(chat,users,user);
+                        return globalService.getNewMessages(key);
+                    }
+                })
+                .flatMap(new Func1<Message, Observable<User>>() {
+                             @Override
+                             public Observable<User> call(Message message) {
+                                 return userService.getUser(message.getUid());
+                             }
+                         }, new Func2<Message, User, Pair<Message, User>>() {
+                            @Override
+                            public  Pair<Message, User> call(Message message, User user) {
+                                return new Pair<>(message,user);
+                            }
+                         }
+                )
+                .subscribe(new Subscriber<Pair<Message, User>>() {
                     @Override
                     public void onCompleted() {
 
@@ -124,23 +107,42 @@ public class GlobalPresenter {
                     }
 
                     @Override
-                    public void onNext(Authentication authentication) {
-                        if (authentication.isSuccess()) {
-                            user = authentication.getUser();
-                            subscription = globalService.getChat()
-                                        .subscribe(chatSubscriber);
-                        }
+                    public void onNext(Pair<Message, User> pair) {
+                        Message message = pair.first;
+                        User sender = pair.second;
+                        globalDisplayer.addToDisplay(message,sender,user);
                     }
                 });
-
     }
 
     public void stopPresenting() {
         globalDisplayer.detach(actionListener);
-        subscription.unsubscribe();
     }
 
     private final GlobalDisplayer.GlobalActionListener actionListener = new GlobalDisplayer.GlobalActionListener() {
+
+        @Override
+        public void onPullMessages() {
+            globalService.getOldMessages(currentKey)
+                    .subscribe(new Subscriber<Chat>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Chat chat) {
+                            currentKey = chat.getFirstKey();
+                            if (chat.size() > 1)
+                                globalDisplayer.displayOldMessages(chat,user);
+                        }
+                    });
+        }
 
         @Override
         public void onUpPressed() {
@@ -163,26 +165,5 @@ public class GlobalPresenter {
         }
 
     };
-
-    static class Pair {
-
-        public final DatabaseResult<Chat> conversationDatabaseResult;
-        public final Authentication auth;
-
-        private Pair(DatabaseResult<Chat> conversationDatabaseResult, Authentication auth) {
-            this.conversationDatabaseResult = conversationDatabaseResult;
-            this.auth = auth;
-        }
-
-        static Func2<DatabaseResult<Chat>, Authentication, Pair> asPair() {
-            return new Func2<DatabaseResult<Chat>, Authentication, Pair>() {
-                @Override
-                public GlobalPresenter.Pair call(DatabaseResult<Chat> chatDatabaseResult, Authentication authentication) {
-                    return new GlobalPresenter.Pair(chatDatabaseResult, authentication);
-                }
-            };
-        }
-
-    }
 
 }

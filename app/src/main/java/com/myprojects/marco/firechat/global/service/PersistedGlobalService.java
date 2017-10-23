@@ -21,8 +21,13 @@ public class PersistedGlobalService implements GlobalService {
     }
 
     @Override
-    public Observable<Message> syncMessages() {
-        return globalDatabase.observeAddMessage();
+    public Observable<Chat> getOldMessages(String key) {
+        return globalDatabase.observeOldMessages(key);
+    }
+
+    @Override
+    public Observable<Message> getNewMessages(String key) {
+        return globalDatabase.observeNewMessages(key);
     }
 
     @Override

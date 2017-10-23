@@ -12,6 +12,8 @@ import com.myprojects.marco.firechat.user.data_model.Users;
 // TODO open conversation on click
 public interface GlobalDisplayer {
 
+    void displayOldMessages(Chat chat, User user);
+
     void display(Chat chat, Users users, User user);
 
     void addToDisplay(Message message, User sender, User user);
@@ -25,6 +27,8 @@ public interface GlobalDisplayer {
     void disableInteraction();
 
     interface GlobalActionListener {
+
+        void onPullMessages();
 
         void onUpPressed();
 

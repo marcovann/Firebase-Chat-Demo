@@ -16,4 +16,6 @@ public interface StorageService {
 
     Observable<String> uploadImage(Bitmap bitmap);
 
+    void removeImage(String image);
+
 }

@@ -23,6 +23,9 @@ import rx.functions.Func1;
 public class FirebaseConversationDatabase implements ConversationDatabase {
 
     private static final int DEFAULT_LIMIT = 1000;
+    private static final int PULL_LIMIT = 20;
+
+    public static final String LAST_MESSAGE = "LAST";
 
     private final DatabaseReference userChat;
     private final FirebaseObservableListeners firebaseObservableListeners;
@@ -37,8 +40,15 @@ public class FirebaseConversationDatabase implements ConversationDatabase {
     }
 
     @Override
-    public Observable<Message> observeAddMessage(String self, String destination) {
-        return firebaseObservableListeners.listenToAddChildEvents(messagesOfUser(self,destination), toMessage());
+    public Observable<Chat> observeOldMessages(String self, String destination, String key) {
+        if (key.equals(LAST_MESSAGE))
+            return firebaseObservableListeners.listenToSingleValueEvents(messagesOfUser(self,destination).limitToLast(PULL_LIMIT), toChat());
+        return firebaseObservableListeners.listenToSingleValueEvents(messagesOfUser(self,destination).endAt(null,key).limitToLast(PULL_LIMIT), toChat());
+    }
+
+    @Override
+    public Observable<Message> observeNewMessages(String self, String destination, String key) {
+        return firebaseObservableListeners.listenToAddChildEvents(messagesOfUser(self,destination).startAt(null,key).limitToFirst(DEFAULT_LIMIT), toMessage());
     }
 
     @Override
@@ -59,9 +69,10 @@ public class FirebaseConversationDatabase implements ConversationDatabase {
                 List<Message> messages = new ArrayList<>();
                 for (DataSnapshot child : children) {
                     Message message = child.getValue(Message.class);
+                    message.setId(child.getKey());
                     messages.add(message);
                 }
-                return new Chat(messages);//.sortedByDate();
+                return new Chat(messages);
             }
         };
     }

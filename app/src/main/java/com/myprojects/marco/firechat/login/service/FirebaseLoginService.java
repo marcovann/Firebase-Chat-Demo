@@ -17,7 +17,7 @@ public class FirebaseLoginService implements LoginService {
 
     private final AuthDatabase authDatabase;
     private final CloudMessagingDatabase cloudMessagingDatabase;
-    private  BehaviorRelay<Authentication> authRelay;
+    private BehaviorRelay<Authentication> authRelay;
 
     public FirebaseLoginService(AuthDatabase authDatabase, CloudMessagingDatabase cloudMessagingDatabase) {
         this.authDatabase = authDatabase;

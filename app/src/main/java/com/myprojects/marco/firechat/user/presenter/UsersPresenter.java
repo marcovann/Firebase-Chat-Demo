@@ -10,6 +10,7 @@ import com.myprojects.marco.firechat.user.data_model.Users;
 import com.myprojects.marco.firechat.user.service.UserService;
 import com.myprojects.marco.firechat.user.view.UsersDisplayer;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
@@ -30,7 +31,6 @@ public class UsersPresenter {
     private UserService userService;
 
     private Subscription loginSubscription;
-    private Subscription userSubscription;
 
     private User self;
 
@@ -48,40 +48,6 @@ public class UsersPresenter {
     public void startPresenting() {
         usersDisplayer.attach(conversationInteractionListener);
 
-        final Subscriber usersSubscriber = new Subscriber<Users>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Users users) {
-                usersDisplayer.display(users);
-            }
-        };
-        Subscriber userSubscriber = new Subscriber<Authentication>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Authentication authentication) {
-                userSubscription = userService.syncUsers()
-                        .subscribe(usersSubscriber);
-            }
-        };
-
         loginSubscription = loginService.getAuthentication()
                 .filter(successfullyAuthenticated())
                 .doOnNext(new Action1<Authentication>() {
@@ -90,14 +56,33 @@ public class UsersPresenter {
                         self = authentication.getUser();
                     }
                 })
-                .subscribe(userSubscriber);
+                .flatMap(new Func1<Authentication, Observable<Users>>() {
+                    @Override
+                    public Observable<Users> call(Authentication authentication) {
+                        return userService.syncUsers();
+                    }
+                })
+                .subscribe(new Subscriber<Users>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Users users) {
+                        usersDisplayer.display(users);
+                    }
+                });
     }
 
     public void stopPresenting() {
         usersDisplayer.detach(conversationInteractionListener);
         loginSubscription.unsubscribe();
-        if (userSubscription != null)
-            userSubscription.unsubscribe();
     }
 
     private Func1<Authentication, Boolean> successfullyAuthenticated() {

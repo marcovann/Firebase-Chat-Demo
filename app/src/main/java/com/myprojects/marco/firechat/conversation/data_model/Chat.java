@@ -3,6 +3,7 @@ package com.myprojects.marco.firechat.conversation.data_model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -25,13 +26,26 @@ public class Chat {
         return messages.get(position);
     }
 
-    public void addMessage(Message message) {
-        if (!this.messages.contains(message))
+    public boolean add(int i, Message message) {
+        this.messages.add(i, message);
+        return true;
+    }
+
+    public void add(Message message) {
+        if (!messages.contains(message))
             this.messages.add(message);
     }
 
     public List<Message> getMessages() {
         return messages;
+    }
+
+    public String getFirstKey() {
+        return messages.get(0).getId();
+    }
+
+    public String getLastKey() {
+        return messages.get(messages.size()-1).getId();
     }
 
     public Chat sortedByDate() {

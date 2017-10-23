@@ -21,6 +21,9 @@ import rx.functions.Func1;
 public class FirebaseGlobalDatabase implements GlobalDatabase {
 
     private static final int DEFAULT_LIMIT = 1000;
+    private static final int PULL_LIMIT = 30;
+
+    public static final String LAST_MESSAGE = "LAST";
 
     private final DatabaseReference globalMessages;
     private final FirebaseObservableListeners firebaseObservableListeners;
@@ -31,8 +34,15 @@ public class FirebaseGlobalDatabase implements GlobalDatabase {
     }
 
     @Override
-    public Observable<Message> observeAddMessage() {
-        return firebaseObservableListeners.listenToAddChildEvents(globalMessages.limitToLast(DEFAULT_LIMIT), toMessage());
+    public Observable<Chat> observeOldMessages(String key) {
+        if (key.equals(LAST_MESSAGE))
+            return firebaseObservableListeners.listenToSingleValueEvents(globalMessages.limitToLast(PULL_LIMIT), toChat());
+        return firebaseObservableListeners.listenToSingleValueEvents(globalMessages.endAt(null,key).limitToLast(PULL_LIMIT), toChat());
+    }
+
+    @Override
+    public Observable<Message> observeNewMessages(String key) {
+        return firebaseObservableListeners.listenToAddChildEvents(globalMessages.startAt(null,key).limitToLast(DEFAULT_LIMIT), toMessage());
     }
 
     @Override
@@ -48,9 +58,10 @@ public class FirebaseGlobalDatabase implements GlobalDatabase {
                 List<Message> messages = new ArrayList<>();
                 for (DataSnapshot child : children) {
                     Message message = child.getValue(Message.class);
+                    message.setId(child.getKey());
                     messages.add(message);
                 }
-                return new Chat(messages).sortedByDate();
+                return new Chat(messages);
             }
         };
     }

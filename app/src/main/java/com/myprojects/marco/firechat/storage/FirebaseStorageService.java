@@ -42,4 +42,9 @@ public class FirebaseStorageService implements StorageService {
         return firebaseObservableListeners.uploadTask(data,firebaseStorage.child(imageRef),imageRef);
     }
 
+    @Override
+    public void removeImage(String image) {
+        firebaseStorage.child(image).delete();
+    }
+
 }

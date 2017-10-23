@@ -22,30 +22,49 @@
                 android:src="@drawable/ic_account_circle_black"
                 />
 
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_add_circle"
+                android:layout_alignBottom="@id/profileImageView"
+                android:layout_alignEnd="@id/profileImageView"/>
 
-            <TextView
-                android:id="@+id/nameTextView"
+            <LinearLayout
+                android:id="@+id/nameLinearLayout"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/profileImageView"
+                android:layout_marginTop="16dp"
                 android:background="@color/colorText"
-                android:paddingStart="24dp"
-                android:paddingEnd="16dp"
-                android:drawableEnd="@drawable/ic_pencil"
-                android:hint="@string/profile.hint.name"
-                />
+                android:clipToPadding="false"
+                android:elevation="1dp">
+
+                <TextView
+                    android:id="@+id/nameTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center_vertical"
+                    android:background="@color/colorText"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="16dp"
+                    android:drawableEnd="@drawable/ic_pencil"
+                    android:hint="@string/profile.hint.name"
+                    />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_below="@id/nameTextView"
-                android:layout_marginTop="16dp"
+                android:layout_below="@id/nameLinearLayout"
+                android:layout_marginTop="24dp"
                 android:background="@color/colorText"
+                android:clipToPadding="false"
                 android:divider="@drawable/divider"
-                android:showDividers="beginning|middle|end"
-                android:dividerPadding="12dp"
+                android:showDividers="middle"
+                android:dividerPadding="8dp"
+                android:elevation="1dp"
                 >
 
                 <TextView

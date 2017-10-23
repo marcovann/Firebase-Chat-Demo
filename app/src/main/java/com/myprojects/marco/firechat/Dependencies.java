@@ -66,11 +66,11 @@ public enum Dependencies {
             //FirebaseApp firebaseApp = FirebaseApp.initializeApp(appContext, FirebaseOptions.fromResource(appContext), "ChatFire");
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
             firebaseToken = FirebaseInstanceId.getInstance().getToken();
-            if (!setPersistence) {
-                FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-                setPersistence = true;
-            }
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+//            if (!setPersistence) {
+//                FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+//                setPersistence = true;
+//            }
             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
             FirebaseObservableListeners firebaseObservableListeners = new FirebaseObservableListeners();
             FirebaseUserDatabase userDatabase = new FirebaseUserDatabase(firebaseDatabase, firebaseObservableListeners);

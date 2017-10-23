@@ -137,12 +137,31 @@ public class ProfilePresenter {
         @Override
         public void onImageSelected(final Bitmap bitmap) {
             storageService.uploadImage(bitmap)
-                    .subscribe(new Action1<String>() {
+                    .subscribe(new Subscriber<String>() {
                         @Override
-                        public void call(String image) {
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(final String image) {
                             if (image != null) {
-                                userService.setProfileImage(self,image);
-                                profileDisplayer.updateProfileImage(bitmap);
+                                userService.getUser(self.getUid())
+                                        .subscribe(new Action1<User>() {
+                                            @Override
+                                            public void call(User user) {
+                                                if (user.getImage() != null) {
+                                                    storageService.removeImage(user.getImage());
+                                                    userService.setProfileImage(self, image);
+                                                    profileDisplayer.updateProfileImage(bitmap);
+                                                }
+                                            }
+                                        });
                             }
                         }
                     });

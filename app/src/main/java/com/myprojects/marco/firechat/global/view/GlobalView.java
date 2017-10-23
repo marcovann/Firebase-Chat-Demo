@@ -1,6 +1,7 @@
 package com.myprojects.marco.firechat.global.view;
 
 import android.content.Context;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -16,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.myprojects.marco.firechat.EndlessRecyclerViewScrollListener;
 import com.myprojects.marco.firechat.R;
 import com.myprojects.marco.firechat.global.data_model.Chat;
 import com.myprojects.marco.firechat.global.data_model.Message;
@@ -37,6 +39,7 @@ public class GlobalView extends LinearLayout implements GlobalDisplayer {
     private EmojiconEditText messageEditText;
     private ImageButton sendButton;
     private RecyclerView messageRecyclerView;
+    private LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
     private EmojiconsPopup popup;
     private ImageButton emojiconButton;
@@ -63,11 +66,15 @@ public class GlobalView extends LinearLayout implements GlobalDisplayer {
         emojiconButton = (ImageButton) this.findViewById(R.id.emoticonButton);
 
         messageRecyclerView = (RecyclerView) this.findViewById(R.id.messageRecyclerView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setStackFromEnd(true);
         messageRecyclerView.setLayoutManager(layoutManager);
         messageRecyclerView.setAdapter(messageAdapter);
 
+    }
+
+    @Override
+    public void displayOldMessages(Chat chat, User user) {
+        messageAdapter.add(chat,user);
     }
 
     @Override
@@ -94,6 +101,7 @@ public class GlobalView extends LinearLayout implements GlobalDisplayer {
         popup.setOnEmojiconBackspaceClickedListener(emojiconBackspaceClickedListener);
         popup.setOnDismissListener(emojiDismissListener);
         emojiconButton.setOnClickListener(emojiClickListener);
+        messageRecyclerView.addOnScrollListener(scrollListener);
     }
 
     @Override
@@ -105,6 +113,7 @@ public class GlobalView extends LinearLayout implements GlobalDisplayer {
         popup.setOnEmojiconBackspaceClickedListener(null);
         popup.setOnDismissListener(null);
         emojiconButton.setOnClickListener(null);
+        messageRecyclerView.removeOnScrollListener(scrollListener);
         this.actionListener = null;
     }
 
@@ -139,6 +148,15 @@ public class GlobalView extends LinearLayout implements GlobalDisplayer {
             actionListener.onSubmitMessage(messageEditText.getText().toString().trim());
             messageEditText.setText("");
         }
+    };
+
+    private final EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+
+        @Override
+        public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+            actionListener.onPullMessages();
+        }
+
     };
 
     private final EmojiconsPopup.OnSoftKeyboardOpenCloseListener softKeyboardOpenCloseListener = new EmojiconsPopup.OnSoftKeyboardOpenCloseListener() {

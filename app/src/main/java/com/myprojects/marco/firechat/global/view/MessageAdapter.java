@@ -13,6 +13,8 @@ import com.myprojects.marco.firechat.user.data_model.User;
 import com.myprojects.marco.firechat.user.data_model.Users;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by marco on 08/08/16.
@@ -25,7 +27,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageViewHolder> {
     private static final int VIEW_TYPE_MESSAGE_THIS_USER_OTHER_DATE = 3;
     private static final int VIEW_TYPE_MESSAGE_OTHER_USERS_OTHER_DATE = 4;
     private Chat chat = new Chat(new ArrayList<Message>());
-    private User user;
+    private User self;
     private final LayoutInflater inflater;
 
     MessageAdapter(LayoutInflater inflater) {
@@ -37,14 +39,23 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageViewHolder> {
         this.chat = chat;
         for (User u: users.getUsers())
             this.chat.addUser(u);
-        this.user = user;
+        this.self = user;
         notifyDataSetChanged();
     }
 
+    public void add(Chat chat, User user) {
+        this.self = user;
+        List<Message> messages = chat.getMessages();
+        Collections.reverse(messages);
+        for (Message m: messages)
+            this.chat.add(0, m);
+        notifyItemRangeInserted(0,chat.size());
+    }
+
     public void add(Message message, User sender, User user) {
-        this.chat.addMessage(message);
+        this.chat.add(message);
         this.chat.addUser(sender);
-        this.user = user;
+        this.self = user;
         notifyDataSetChanged();
     }
 
@@ -90,13 +101,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageViewHolder> {
             String concatDate1 = date1[0] + date1[1] + date1[2];
             String concatDate2 = date2[0] + date2[1] + date2[2];
             if (!concatDate1.equals(concatDate2)) {
-                return chat.get(position).getUid().equals(user.getUid()) ? VIEW_TYPE_MESSAGE_THIS_USER_OTHER_DATE : VIEW_TYPE_MESSAGE_OTHER_USERS_OTHER_DATE;
+                return chat.get(position).getUid().equals(self.getUid()) ? VIEW_TYPE_MESSAGE_THIS_USER_OTHER_DATE : VIEW_TYPE_MESSAGE_OTHER_USERS_OTHER_DATE;
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            return chat.get(position).getUid().equals(user.getUid()) ? VIEW_TYPE_MESSAGE_THIS_USER_OTHER_DATE : VIEW_TYPE_MESSAGE_OTHER_USERS_OTHER_DATE;
+            return chat.get(position).getUid().equals(self.getUid()) ? VIEW_TYPE_MESSAGE_THIS_USER_OTHER_DATE : VIEW_TYPE_MESSAGE_OTHER_USERS_OTHER_DATE;
         }
 
-        return chat.get(position).getUid().equals(user.getUid()) ? VIEW_TYPE_MESSAGE_THIS_USER : VIEW_TYPE_MESSAGE_OTHER_USERS;
+        return chat.get(position).getUid().equals(self.getUid()) ? VIEW_TYPE_MESSAGE_THIS_USER : VIEW_TYPE_MESSAGE_OTHER_USERS;
     }
 
 }

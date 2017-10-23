@@ -11,7 +11,9 @@ import rx.Observable;
 
 public interface ConversationDatabase {
 
-    Observable<Message> observeAddMessage(String self, String destination);
+    Observable<Chat> observeOldMessages(String self, String destination, String key);
+
+    Observable<Message> observeNewMessages(String self, String destination, String key);
 
     Observable<Message> observeLastMessage(String self, String destination);
 

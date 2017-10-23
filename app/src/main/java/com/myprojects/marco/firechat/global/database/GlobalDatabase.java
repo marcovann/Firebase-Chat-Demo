@@ -11,7 +11,9 @@ import rx.Observable;
 
 public interface GlobalDatabase {
 
-    Observable<Message> observeAddMessage();
+    Observable<Chat> observeOldMessages(String key);
+
+    Observable<Message> observeNewMessages(String key);
 
     Observable<Chat> observeChat();
 

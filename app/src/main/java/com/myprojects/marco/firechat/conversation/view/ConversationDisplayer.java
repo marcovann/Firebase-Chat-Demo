@@ -9,6 +9,8 @@ import com.myprojects.marco.firechat.conversation.data_model.Message;
 
 public interface ConversationDisplayer {
 
+    void displayOldMessages(Chat chat, String user);
+
     void display(Chat chat, String user);
 
     void addToDisplay(Message message, String user);
@@ -28,6 +30,8 @@ public interface ConversationDisplayer {
     void disableInteraction();
 
     interface ConversationActionListener {
+
+        void onPullMessages();
 
         void onUpPressed();
 

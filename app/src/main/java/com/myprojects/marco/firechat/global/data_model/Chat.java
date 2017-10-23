@@ -35,9 +35,22 @@ public class Chat {
         return messages.get(position);
     }
 
-    public void addMessage(Message message) {
+    public boolean add(int i, Message message) {
+        this.messages.add(i, message);
+        return true;
+    }
+
+    public void add(Message message) {
         if (!messages.contains(message))
             messages.add(message);
+    }
+
+    public String getFirstKey() {
+        return messages.get(0).getId();
+    }
+
+    public String getLastKey() {
+        return messages.get(messages.size()-1).getId();
     }
 
     public User getUser(String uid) {

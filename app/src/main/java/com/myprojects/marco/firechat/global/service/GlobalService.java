@@ -12,7 +12,9 @@ import rx.Observable;
 
 public interface GlobalService {
 
-    Observable<Message> syncMessages();
+    Observable<Chat> getOldMessages(String key);
+
+    Observable<Message> getNewMessages(String key);
 
     Observable<DatabaseResult<Chat>> getChat();
 

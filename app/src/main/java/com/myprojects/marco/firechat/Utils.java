@@ -1,12 +1,26 @@
 package com.myprojects.marco.firechat;
 
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.google.firebase.storage.StorageReference;
 import com.myprojects.marco.firechat.storage.FirebaseImageLoader;
+import com.myprojects.marco.firechat.storage.StorageLocalDatabase;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -77,15 +91,15 @@ public class Utils {
         return null;
     }
 
-    public static void loadImageElseBlack(String image, CircleImageView imageView, Context context) {
+    public static void loadImageElseBlack(final String image, final CircleImageView imageView, final Context context) {
 
         try {
             if (image != null && image.length() > 0) {
-                StorageReference ref = Dependencies.INSTANCE.getStorageService().getProfileImageReference(image);
-                Glide.with(context)
-                        .using(new FirebaseImageLoader())
-                        .load(ref)
-                        .into(imageView);
+                    StorageReference ref = Dependencies.INSTANCE.getStorageService().getProfileImageReference(image);
+                    Glide.with(context)
+                            .using(new FirebaseImageLoader())
+                            .load(ref)
+                            .into(imageView);
             } else {
                 Glide.with(context)
                         .load("")
@@ -98,7 +112,7 @@ public class Utils {
         }
     }
 
-    public static void loadImageElseWhite(String image, CircleImageView imageView, Context context) {
+    public static void loadImageElseWhite(final String image, final CircleImageView imageView, final Context context) {
 
         try {
             if (image != null && image.length() > 0) {
