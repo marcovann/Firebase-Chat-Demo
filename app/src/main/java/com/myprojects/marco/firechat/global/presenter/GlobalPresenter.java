@@ -14,10 +14,14 @@ import com.myprojects.marco.firechat.user.data_model.User;
 import com.myprojects.marco.firechat.user.data_model.Users;
 import com.myprojects.marco.firechat.user.service.UserService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.functions.FuncN;
 
 /**
  * Created by marco on 08/08/16.
@@ -61,40 +65,48 @@ public class GlobalPresenter {
                     }
                 })
                 .flatMap(new Func1<Chat, Observable<Users>>() {
-                             @Override
-                             public Observable<Users> call(Chat chat) {
-                                 return userService.getUsers();
-                             }
-                         }, new Func2<Chat, Users, Pair<Chat, Users>>() {
+                    @Override
+                    public Observable<Users> call(Chat chat) {
+                        currentKey = chat.getFirstKey();
+                        List<Observable<User>> list = new ArrayList<>();
+                        for (Message m : chat.getMessages())
+                            list.add(userService.getUser(m.getUid()));
+
+                        return Observable.zip(list, new FuncN<Users>() {
                             @Override
-                            public Pair<Chat,Users> call(Chat chat, Users users) {
-                                return new Pair<>(chat,users);
+                            public Users call(Object... args) {
+                                ArrayList<User> users = new ArrayList<>();
+                                for (Object o: args) users.add((User)o);
+                                return new Users(users);
                             }
-                         }
-                )
+                        });
+                    }
+                }, new Func2<Chat, Users, Pair<Chat, Users>>() {
+                    @Override
+                    public Pair<Chat, Users> call(Chat chat, Users users) {
+                        return new Pair<>(chat, users);
+                    }
+                })
                 .flatMap(new Func1<Pair<Chat, Users>, Observable<Message>>() {
                     @Override
                     public Observable<Message> call(Pair<Chat, Users> pair) {
                         Chat chat = pair.first;
                         Users users = pair.second;
-                        String key = chat.get(chat.size() - 1).getId();
-                        currentKey = chat.getFirstKey();
-                        globalDisplayer.display(chat,users,user);
-                        return globalService.getNewMessages(key);
+                        globalDisplayer.display(chat, users, user);
+                        return globalService.getNewMessages(chat.getLastKey());
                     }
                 })
                 .flatMap(new Func1<Message, Observable<User>>() {
-                             @Override
-                             public Observable<User> call(Message message) {
-                                 return userService.getUser(message.getUid());
-                             }
-                         }, new Func2<Message, User, Pair<Message, User>>() {
-                            @Override
-                            public  Pair<Message, User> call(Message message, User user) {
-                                return new Pair<>(message,user);
-                            }
-                         }
-                )
+                    @Override
+                    public Observable<User> call(Message message) {
+                        return userService.getUser(message.getUid());
+                    }
+                }, new Func2<Message, User, Pair<Message,User>>() {
+                    @Override
+                    public Pair<Message, User> call(Message message, User user) {
+                        return new Pair<>(message, user);
+                    }
+                })
                 .subscribe(new Subscriber<Pair<Message, User>>() {
                     @Override
                     public void onCompleted() {
@@ -110,9 +122,10 @@ public class GlobalPresenter {
                     public void onNext(Pair<Message, User> pair) {
                         Message message = pair.first;
                         User sender = pair.second;
-                        globalDisplayer.addToDisplay(message,sender,user);
+                        globalDisplayer.addToDisplay(message, sender, user);
                     }
                 });
+
     }
 
     public void stopPresenting() {
@@ -124,7 +137,30 @@ public class GlobalPresenter {
         @Override
         public void onPullMessages() {
             globalService.getOldMessages(currentKey)
-                    .subscribe(new Subscriber<Chat>() {
+                    .flatMap(new Func1<Chat, Observable<Users>>() {
+                        @Override
+                        public Observable<Users> call(Chat chat) {
+                            currentKey = chat.getFirstKey();
+                            List<Observable<User>> list = new ArrayList<>();
+                            for (Message m : chat.getMessages())
+                                list.add(userService.getUser(m.getUid()));
+
+                            return Observable.zip(list, new FuncN<Users>() {
+                                @Override
+                                public Users call(Object... args) {
+                                    ArrayList<User> users = new ArrayList<>();
+                                    for (Object o: args) users.add((User)o);
+                                    return new Users(users);
+                                }
+                            });
+                        }
+                    }, new Func2<Chat, Users, Pair<Chat, Users>>() {
+                        @Override
+                        public Pair<Chat, Users> call(Chat chat, Users users) {
+                            return new Pair<>(chat, users);
+                        }
+                    })
+                    .subscribe(new Subscriber<Pair<Chat, Users>>() {
                         @Override
                         public void onCompleted() {
 
@@ -136,10 +172,12 @@ public class GlobalPresenter {
                         }
 
                         @Override
-                        public void onNext(Chat chat) {
+                        public void onNext(Pair<Chat, Users> pair) {
+                            Chat chat = pair.first;
+                            Users users = pair.second;
                             currentKey = chat.getFirstKey();
                             if (chat.size() > 1)
-                                globalDisplayer.displayOldMessages(chat,user);
+                                globalDisplayer.displayOldMessages(chat, users, user);
                         }
                     });
         }

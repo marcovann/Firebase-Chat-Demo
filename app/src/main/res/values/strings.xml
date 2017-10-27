@@ -81,6 +81,8 @@
     <string name="profile.dialog.remove.positive">Confirm</string>
     <string name="profile.dialog.remove.negative">Cancel</string>
     <string name="profile.dialog.input.close">Close</string>
+    <string name="profile.dialog.upload.title">Uploading Image</string>
+    <string name="profile.dialog.upload.message">Please Wait...</string>
 
     <!-- fragment users -->
     <string name="users.toolbar.title">"Users List"</string>

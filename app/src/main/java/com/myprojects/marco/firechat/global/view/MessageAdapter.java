@@ -43,7 +43,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void add(Chat chat, User user) {
+    public void add(Chat chat, Users users, User user) {
+        for (User u: users.getUsers())
+            this.chat.addUser(u);
         this.self = user;
         List<Message> messages = chat.getMessages();
         Collections.reverse(messages);

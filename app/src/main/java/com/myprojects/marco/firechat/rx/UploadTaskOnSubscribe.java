@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -49,6 +50,7 @@ public class UploadTaskOnSubscribe<T,U> implements Observable.OnSubscribe<U> {
             subscriber.onNext(successValue);
             subscriber.onCompleted();
         }
+
     }
 
     private static class RxFailureListener<T> implements OnFailureListener {

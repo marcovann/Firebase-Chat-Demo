@@ -19,6 +19,10 @@ public interface ProfileNavigator extends Navigator {
 
     void showRemoveDialog();
 
+    void showProgressDialog();
+
+    void dismissProgressDialog();
+
     void attach(ProfileDialogListener dialogListener);
 
     void detach(ProfileDialogListener dialogListener);

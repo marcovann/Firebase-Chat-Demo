@@ -12,7 +12,7 @@ import com.myprojects.marco.firechat.user.data_model.Users;
 // TODO open conversation on click
 public interface GlobalDisplayer {
 
-    void displayOldMessages(Chat chat, User user);
+    void displayOldMessages(Chat chat, Users users, User user);
 
     void display(Chat chat, Users users, User user);
 

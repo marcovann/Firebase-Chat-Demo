@@ -13,6 +13,10 @@ public interface ProfileDisplayer {
 
     void display(User user);
 
+    void onStartUpload();
+
+    void onFinishUpload();
+
     void updateProfileImage(Bitmap bitmap);
 
     void attach(ProfileActionListener profileActionListener);
@@ -30,6 +34,10 @@ public interface ProfileDisplayer {
         void onImagePressed();
 
         void onRemovePressed();
+
+        void onStartUpload();
+
+        void onFinishUpload();
 
     }
 

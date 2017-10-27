@@ -58,6 +58,16 @@ public class ProfileView extends LinearLayout implements ProfileDisplayer, View.
     }
 
     @Override
+    public void onStartUpload() {
+        actionListener.onStartUpload();
+    }
+
+    @Override
+    public void onFinishUpload() {
+        actionListener.onFinishUpload();
+    }
+
+    @Override
     public void updateProfileImage(Bitmap bitmap) {
         profileImageView.setImageBitmap(bitmap);
         profileImageView.setDrawingCacheEnabled(true);

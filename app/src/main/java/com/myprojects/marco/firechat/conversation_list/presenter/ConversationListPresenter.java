@@ -1,6 +1,7 @@
 package com.myprojects.marco.firechat.conversation_list.presenter;
 
 import android.os.Bundle;
+import android.util.Pair;
 
 import com.myprojects.marco.firechat.conversation.data_model.Message;
 import com.myprojects.marco.firechat.conversation_list.data_model.Conversation;
@@ -12,7 +13,6 @@ import com.myprojects.marco.firechat.navigation.AndroidConversationsNavigator;
 import com.myprojects.marco.firechat.user.data_model.User;
 import com.myprojects.marco.firechat.user.service.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -20,6 +20,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by marco on 29/07/16.
@@ -37,10 +38,7 @@ public class ConversationListPresenter {
     private UserService userService;
 
     private Subscription loginSubscription;
-    private Subscription userSubscription;
-    private Subscription messageSubscription;
 
-    private List<String> uids;
     private User self;
 
     public ConversationListPresenter(
@@ -59,52 +57,6 @@ public class ConversationListPresenter {
     public void startPresenting() {
         conversationListDisplayer.attach(conversationInteractionListener);
 
-        final Subscriber userSubscriber = new Subscriber<User>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(final User user) {
-                messageSubscription = conversationListService.getLastMessageFor(self,user)
-                        .subscribe(new Action1<Message>() {
-                            @Override
-                            public void call(Message message) {
-                                conversationListDisplayer.addToDisplay(
-                                        new Conversation(user.getUid(),user.getName(),user.getImage(),message.getMessage(),message.getTimestamp()));
-                            }
-                        });
-            }
-
-        };
-        Subscriber usersSubscriber = new Subscriber<List<String>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(List<String> strings) {
-                uids = new ArrayList<>(strings);
-                for (String uid: uids) {
-                    userSubscription = userService.getUser(uid)
-                            .subscribe(userSubscriber);
-                }
-            }
-
-        };
-
         loginSubscription = loginService.getAuthentication()
                 .filter(successfullyAuthenticated())
                 .doOnNext(new Action1<Authentication>() {
@@ -113,26 +65,60 @@ public class ConversationListPresenter {
                         self = authentication.getUser();
                     }
                 })
-                .flatMap(conversationsForUser())
-                .subscribe(usersSubscriber);
+                .flatMap(new Func1<Authentication, Observable<List<String>>>() {
+                    @Override
+                    public Observable<List<String>> call(Authentication authentication) {
+                        return conversationListService.getConversationsFor(self);
+                    }
+                })
+                .flatMap(new Func1<List<String>, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(List<String> strings) {
+                        return Observable.from(strings);
+                    }
+                })
+                .flatMap(new Func1<String, Observable<User>>() {
+
+                    @Override
+                    public Observable<User> call(String s) {
+                        return userService.getUser(s);
+                    }
+                })
+                .flatMap(new Func1<User, Observable<Message>>() {
+                    @Override
+                    public Observable<Message> call(User user) {
+                        return conversationListService.getLastMessageFor(self, user);
+                    }
+                }, new Func2<User, Message, Pair<User,Message>>() {
+                    @Override
+                    public Pair<User, Message> call(User user, Message message) {
+                        return new Pair<>(user, message);
+                    }
+                })
+                .subscribe(new Subscriber<Pair<User, Message>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Pair<User, Message> pair) {
+                        User user = pair.first;
+                        Message message = pair.second;
+                        conversationListDisplayer.addToDisplay(
+                                new Conversation(user.getUid(),user.getName(),user.getImage(),message.getMessage(),message.getTimestamp()));
+                    }
+                });
     }
 
     public void stopPresenting() {
         conversationListDisplayer.detach(conversationInteractionListener);
         loginSubscription.unsubscribe();
-        if (userSubscription != null)
-            userSubscription.unsubscribe();
-        if (messageSubscription != null)
-            messageSubscription.unsubscribe();
-    }
-
-    private Func1<Authentication, Observable<List<String>>> conversationsForUser() {
-        return new Func1<Authentication, Observable<List<String>>>() {
-            @Override
-            public Observable<List<String>> call(Authentication authentication) {
-                return conversationListService.getConversationsFor(self);
-            }
-        };
     }
 
     private Func1<Authentication, Boolean> successfullyAuthenticated() {

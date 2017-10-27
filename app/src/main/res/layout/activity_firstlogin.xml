@@ -34,17 +34,6 @@
             android:hint="@string/profile.hint.name"
             />
 
-        <Button
-            android:id="@+id/startButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:background="@color/colorAccent"
-            android:textColor="@color/colorText"
-            android:text="@string/firstLogin.button.next"
-            />
-
     </RelativeLayout>
 
 </LinearLayout>

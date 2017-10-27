@@ -73,8 +73,8 @@ public class GlobalView extends LinearLayout implements GlobalDisplayer {
     }
 
     @Override
-    public void displayOldMessages(Chat chat, User user) {
-        messageAdapter.add(chat,user);
+    public void displayOldMessages(Chat chat, Users users, User user) {
+        messageAdapter.add(chat, users, user);
     }
 
     @Override

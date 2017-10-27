@@ -39,7 +39,7 @@ public class FirebaseStorageService implements StorageService {
         byte[] data = baos.toByteArray();
         final String imageRef = bitmap.hashCode() + System.currentTimeMillis() + ".jpg";
 
-        return firebaseObservableListeners.uploadTask(data,firebaseStorage.child(imageRef),imageRef);
+        return firebaseObservableListeners.uploadTask(data, firebaseStorage.child(imageRef), imageRef);
     }
 
     @Override

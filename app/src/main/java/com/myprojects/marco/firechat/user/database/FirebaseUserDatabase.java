@@ -46,7 +46,7 @@ public class FirebaseUserDatabase implements UserDatabase {
 
     @Override
     public Observable<User> observeUser(String userId) {
-        return firebaseObservableListeners.listenToValueEvents(usersDB.child(userId), as(User.class));
+        return firebaseObservableListeners.listenToSingleValueEvents(usersDB.child(userId), as(User.class));
     }
 
     @Override

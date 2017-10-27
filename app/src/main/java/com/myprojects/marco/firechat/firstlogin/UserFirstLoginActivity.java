@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -52,7 +54,6 @@ public class UserFirstLoginActivity extends AppCompatActivity
     private Toolbar toolbar;
     private EditText nameEditText;
     private CircleImageView profileImageView;
-    private Button startButton;
 
     private boolean hasImageChanged = false;
 
@@ -81,43 +82,26 @@ public class UserFirstLoginActivity extends AppCompatActivity
         if (firebaseUser.getDisplayName() != null && firebaseUser.getDisplayName().length() > 0)
             nameEditText.setText(firebaseUser.getDisplayName());
         profileImageView = (CircleImageView) findViewById(R.id.profileImageView);
-        startButton = (Button) findViewById(R.id.startButton);
 
         profileImageView.setOnClickListener(this);
-        startButton.setOnClickListener(this);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch(requestCode) {
-            case SELECT_PHOTO:
-                if(resultCode == RESULT_OK){
-                    try {
-                        final Uri imageUri = data.getData();
-                        final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                        profileImageView.setImageBitmap(selectedImage);
-                        hasImageChanged = true;
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-        }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_firstlogin, menu);
+        return true;
     }
 
     @Override
-    public void onClick(View view) {
-        switch(view.getId()) {
-            case R.id.startButton:
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.done:
                 if (nameEditText.getText() == null) {
                     Toast.makeText(this,"Name cannot be empty",Toast.LENGTH_SHORT).show();
-                    return;
+                    return false;
                 } else if (nameEditText.getText().toString().trim().length() == 0) {
                     Toast.makeText(this,"Name cannot be empty",Toast.LENGTH_SHORT).show();
-                    return;
+                    return false;
                 }
 
                 if (firebaseUser != null) {
@@ -162,6 +146,34 @@ public class UserFirstLoginActivity extends AppCompatActivity
                     }
                 }
                 break;
+        }
+        return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch(requestCode) {
+            case SELECT_PHOTO:
+                if(resultCode == RESULT_OK){
+                    try {
+                        final Uri imageUri = data.getData();
+                        final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                        profileImageView.setImageBitmap(selectedImage);
+                        hasImageChanged = true;
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch(view.getId()) {
             case R.id.profileImageView:
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");

@@ -27,11 +27,18 @@ public class AndroidProfileNavigator implements ProfileNavigator {
     private static final int SELECT_PHOTO = 1;
 
     private final AppCompatActivity activity;
+    private final MaterialDialog.Builder progressDialogBuilder;
+    private MaterialDialog progressDialog;
 
     private ProfileDialogListener dialogListener;
 
     public AndroidProfileNavigator(AppCompatActivity activity) {
         this.activity = activity;
+
+        this.progressDialogBuilder = new MaterialDialog.Builder(activity)
+                .title(R.string.profile_dialog_upload_title)
+                .content(R.string.profile_dialog_upload_message)
+                .progress(true, 0);
     }
 
     @Override
@@ -64,7 +71,7 @@ public class AndroidProfileNavigator implements ProfileNavigator {
 
     @Override
     public void showInputPasswordDialog(String hint, User user) {
-        MaterialDialog dialog = new MaterialDialog.Builder(activity)
+        new MaterialDialog.Builder(activity)
                 .title(R.string.profile_dialog_password_title)
                 .inputType(InputType.TYPE_TEXT_VARIATION_PASSWORD)
                 .input(null, null, new MaterialDialog.InputCallback() {
@@ -98,7 +105,7 @@ public class AndroidProfileNavigator implements ProfileNavigator {
 
     @Override
     public void showRemoveDialog() {
-        MaterialDialog dialog = new MaterialDialog.Builder(activity)
+        new MaterialDialog.Builder(activity)
                 .content(R.string.profile_dialog_remove_content)
                 .positiveText(R.string.profile_dialog_remove_positive)
                 .negativeText(R.string.profile_dialog_remove_negative)
@@ -112,6 +119,16 @@ public class AndroidProfileNavigator implements ProfileNavigator {
                     }
                 })
                 .show();
+    }
+
+    @Override
+    public void showProgressDialog() {
+        this.progressDialog = this.progressDialogBuilder.show();
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        this.progressDialog.dismiss();
     }
 
     @Override

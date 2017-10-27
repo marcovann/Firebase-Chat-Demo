@@ -1,6 +1,7 @@
 package com.myprojects.marco.firechat.profile.presenter;
 
 import android.graphics.Bitmap;
+import android.support.v4.util.Pair;
 import android.widget.TextView;
 
 import com.myprojects.marco.firechat.login.data_model.Authentication;
@@ -12,9 +13,12 @@ import com.myprojects.marco.firechat.storage.StorageService;
 import com.myprojects.marco.firechat.user.data_model.User;
 import com.myprojects.marco.firechat.user.service.UserService;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by marco on 09/09/16.
@@ -31,7 +35,6 @@ public class ProfilePresenter {
 
     private User self;
     private Subscription loginSubscription;
-    private Subscription userSubscription;
 
     public ProfilePresenter(LoginService loginService,
                             UserService userService,
@@ -51,31 +54,27 @@ public class ProfilePresenter {
         navigator.attach(dialogListener);
         profileDisplayer.attach(actionListener);
         loginSubscription = loginService.getAuthentication()
-                .subscribe(new Action1<Authentication>() {
+                .flatMap(new Func1<Authentication, Observable<User>>() {
                     @Override
-                    public void call(final Authentication authentication) {
-                        if (authentication.isSuccess()) {
-                            userService.getUser(authentication.getUser().getUid())
-                                    .subscribe(new Subscriber<User>() {
-                                        @Override
-                                        public void onCompleted() {
+                    public Observable<User> call(Authentication authentication) {
+                        return userService.getUser(authentication.getUser().getUid());
+                    }
+                })
+                .subscribe(new Subscriber<User>() {
+                    @Override
+                    public void onCompleted() {
 
-                                        }
+                    }
 
-                                        @Override
-                                        public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-                                        }
+                    }
 
-                                        @Override
-                                        public void onNext(User user) {
-                                            self = user;
-                                            profileDisplayer.display(user);
-                                        }
-                                    });
-                        } else {
-                            navigator.toParent();
-                        }
+                    @Override
+                    public void onNext(User user) {
+                        self = user;
+                        profileDisplayer.display(user);
                     }
                 });
     }
@@ -84,8 +83,6 @@ public class ProfilePresenter {
         navigator.detach(dialogListener);
         profileDisplayer.detach(actionListener);
         loginSubscription.unsubscribe();
-        if (userSubscription != null)
-            userSubscription.unsubscribe();
     }
 
     private ProfileDisplayer.ProfileActionListener actionListener = new ProfileDisplayer.ProfileActionListener() {
@@ -115,6 +112,16 @@ public class ProfilePresenter {
         public void onRemovePressed() {
             navigator.showRemoveDialog();
         }
+
+        @Override
+        public void onStartUpload() {
+            navigator.showProgressDialog();
+        }
+
+        @Override
+        public void onFinishUpload() {
+            navigator.dismissProgressDialog();
+        }
     };
 
     private ProfileNavigator.ProfileDialogListener dialogListener = new ProfileNavigator.ProfileDialogListener() {
@@ -136,8 +143,21 @@ public class ProfilePresenter {
 
         @Override
         public void onImageSelected(final Bitmap bitmap) {
+            profileDisplayer.onStartUpload();
             storageService.uploadImage(bitmap)
-                    .subscribe(new Subscriber<String>() {
+                    .flatMap(new Func1<String, Observable<User>>() {
+                        @Override
+                        public Observable<User> call(String s) {
+                            profileDisplayer.onFinishUpload();
+                            return userService.getUser(self.getUid());
+                        }
+                    }, new Func2<String, User, Pair<String,User>>() {
+                        @Override
+                        public Pair<String, User> call(String s, User user) {
+                            return new Pair<>(s,user);
+                        }
+                    })
+                    .subscribe(new Subscriber<Pair<String, User>>() {
                         @Override
                         public void onCompleted() {
 
@@ -149,19 +169,13 @@ public class ProfilePresenter {
                         }
 
                         @Override
-                        public void onNext(final String image) {
-                            if (image != null) {
-                                userService.getUser(self.getUid())
-                                        .subscribe(new Action1<User>() {
-                                            @Override
-                                            public void call(User user) {
-                                                if (user.getImage() != null) {
-                                                    storageService.removeImage(user.getImage());
-                                                    userService.setProfileImage(self, image);
-                                                    profileDisplayer.updateProfileImage(bitmap);
-                                                }
-                                            }
-                                        });
+                        public void onNext(Pair<String, User> pair) {
+                            String image = pair.first;
+                            User user = pair.second;
+                            if (user.getImage() != null) {
+                                storageService.removeImage(user.getImage());
+                                userService.setProfileImage(self, image);
+                                profileDisplayer.updateProfileImage(bitmap);
                             }
                         }
                     });
