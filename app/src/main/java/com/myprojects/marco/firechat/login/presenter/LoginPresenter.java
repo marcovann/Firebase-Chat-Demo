@@ -33,32 +33,36 @@ public class LoginPresenter {
         navigator.attach(loginResultListener,forgotDialogListener);
         loginDisplayer.attach(actionListener);
         subscription = loginService.getAuthentication()
-                .subscribe(new Subscriber<Authentication>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Authentication authentication) {
-                        if (authentication.isSuccess()) {
-                            navigator.toMainActivity();
-                        } else {
-                            loginDisplayer.showAuthenticationError(authentication.getFailure().getLocalizedMessage());
-                        }
-                    }
-                });
+                .subscribe(authenticationSubscriber());
     }
 
     public void stopPresenting() {
         navigator.detach(loginResultListener,forgotDialogListener);
         loginDisplayer.detach(actionListener);
         subscription.unsubscribe();
+    }
+
+    private Subscriber<Authentication> authenticationSubscriber() {
+        return new Subscriber<Authentication>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Authentication authentication) {
+                if (authentication.isSuccess()) {
+                    navigator.toMainActivity();
+                } else {
+                    loginDisplayer.showAuthenticationError(authentication.getFailure().getLocalizedMessage());
+                }
+            }
+        };
     }
 
     private final LoginDisplayer.LoginActionListener actionListener = new LoginDisplayer.LoginActionListener() {

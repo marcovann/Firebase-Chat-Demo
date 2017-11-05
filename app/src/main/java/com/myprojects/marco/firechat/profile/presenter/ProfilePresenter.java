@@ -54,29 +54,8 @@ public class ProfilePresenter {
         navigator.attach(dialogListener);
         profileDisplayer.attach(actionListener);
         loginSubscription = loginService.getAuthentication()
-                .flatMap(new Func1<Authentication, Observable<User>>() {
-                    @Override
-                    public Observable<User> call(Authentication authentication) {
-                        return userService.getUser(authentication.getUser().getUid());
-                    }
-                })
-                .subscribe(new Subscriber<User>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(User user) {
-                        self = user;
-                        profileDisplayer.display(user);
-                    }
-                });
+                .flatMap(getUser())
+                .subscribe(userSubscriber());
     }
 
     public void stopPresenting() {
@@ -84,6 +63,80 @@ public class ProfilePresenter {
         profileDisplayer.detach(actionListener);
         loginSubscription.unsubscribe();
     }
+
+    private Func1<Authentication, Observable<User>> getUser() {
+        return new Func1<Authentication, Observable<User>>() {
+            @Override
+            public Observable<User> call(Authentication authentication) {
+                return userService.getUser(authentication.getUser().getUid());
+            }
+        };
+    }
+
+    private Subscriber<User> userSubscriber() {
+        return new Subscriber<User>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(User user) {
+                self = user;
+                profileDisplayer.display(user);
+            }
+        };
+    }
+
+    private Func1<String, Observable<User>> getCurrentUser() {
+        return new Func1<String, Observable<User>>() {
+            @Override
+            public Observable<User> call(String s) {
+                profileDisplayer.onFinishUpload();
+                return userService.getUser(self.getUid());
+            }
+        };
+    }
+
+    private Func2<String, User, Pair<String, User>> asPairImageUser() {
+        return new Func2<String, User, Pair<String, User>>() {
+            @Override
+            public Pair<String, User> call(String s, User user) {
+                return new Pair<>(s, user);
+            }
+        };
+    }
+
+    private Subscriber<Pair<String, User>> imageSubscriber(final Bitmap bitmap) {
+        return new Subscriber<Pair<String, User>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Pair<String, User> pair) {
+                String image = pair.first;
+                User user = pair.second;
+                if (user.getImage() != null) {
+                    storageService.removeImage(user.getImage());
+                    userService.setProfileImage(self, image);
+                    profileDisplayer.updateProfileImage(bitmap);
+                }
+            }
+        };
+    }
+
 
     private ProfileDisplayer.ProfileActionListener actionListener = new ProfileDisplayer.ProfileActionListener() {
 
@@ -145,40 +198,8 @@ public class ProfilePresenter {
         public void onImageSelected(final Bitmap bitmap) {
             profileDisplayer.onStartUpload();
             storageService.uploadImage(bitmap)
-                    .flatMap(new Func1<String, Observable<User>>() {
-                        @Override
-                        public Observable<User> call(String s) {
-                            profileDisplayer.onFinishUpload();
-                            return userService.getUser(self.getUid());
-                        }
-                    }, new Func2<String, User, Pair<String,User>>() {
-                        @Override
-                        public Pair<String, User> call(String s, User user) {
-                            return new Pair<>(s,user);
-                        }
-                    })
-                    .subscribe(new Subscriber<Pair<String, User>>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onNext(Pair<String, User> pair) {
-                            String image = pair.first;
-                            User user = pair.second;
-                            if (user.getImage() != null) {
-                                storageService.removeImage(user.getImage());
-                                userService.setProfileImage(self, image);
-                                profileDisplayer.updateProfileImage(bitmap);
-                            }
-                        }
-                    });
+                    .flatMap(getCurrentUser(), asPairImageUser())
+                    .subscribe(imageSubscriber(bitmap));
         }
 
     };

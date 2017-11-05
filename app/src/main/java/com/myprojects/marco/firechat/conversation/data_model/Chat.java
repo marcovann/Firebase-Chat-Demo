@@ -32,8 +32,7 @@ public class Chat {
     }
 
     public void add(Message message) {
-        if (!messages.contains(message))
-            this.messages.add(message);
+        this.messages.add(message);
     }
 
     public List<Message> getMessages() {

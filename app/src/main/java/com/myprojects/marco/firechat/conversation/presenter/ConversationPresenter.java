@@ -58,58 +58,12 @@ public class ConversationPresenter {
         conversationDisplayer.disableInteraction();
 
         subscription = userService.getUser(destination)
-                .flatMap(new Func1<User, Observable<Chat>>() {
-                    @Override
-                    public Observable<Chat> call(User user) {
-                        conversationDisplayer.setupToolbar(user.getName(),user.getImage(),user.getLastSeen());
-                        return conversationService.getOldMessages(self,destination,FirebaseConversationDatabase.LAST_MESSAGE);
-                    }
-                })
-                .flatMap(new Func1<Chat, Observable<Message>>() {
-                    @Override
-                    public Observable<Message> call(Chat chat) {
-                        conversationDisplayer.display(chat,self);
-                        currentKey = chat.getFirstKey();
-                        return conversationService.getNewMessages(self,destination,chat.getLastKey());
-                    }
-                })
-                .subscribe(new Subscriber<Message>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Message message) {
-                        conversationDisplayer.addToDisplay(message,self);
-                    }
-                });
+                .flatMap(getOldMessages())
+                .flatMap(getNewMessages())
+                .subscribe(newMessageSubscriber());
 
         typingSubscription = conversationService.getTyping(self,destination)
-                .subscribe(new Subscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        conversationService.setTyping(self,destination,false);
-                    }
-
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        if (aBoolean)
-                            conversationDisplayer.showTyping();
-                        else
-                            conversationDisplayer.hideTyping();
-                    }
-                });
+                .subscribe(isTypingSubscriber());
     }
 
 
@@ -125,29 +79,95 @@ public class ConversationPresenter {
         return self != null;
     }
 
+    private Func1<User, Observable<Chat>> getOldMessages() {
+        return new Func1<User, Observable<Chat>>() {
+            @Override
+            public Observable<Chat> call(User user) {
+                conversationDisplayer.setupToolbar(user.getName(),user.getImage(),user.getLastSeen());
+                return conversationService.getOldMessages(self,destination,FirebaseConversationDatabase.LAST_MESSAGE);
+            }
+        };
+    }
+
+    private Func1<Chat, Observable<Message>> getNewMessages() {
+        return new Func1<Chat, Observable<Message>>() {
+            @Override
+            public Observable<Message> call(Chat chat) {
+                conversationDisplayer.display(chat,self);
+                currentKey = chat.getFirstKey();
+                return conversationService.getNewMessages(self,destination,chat.getLastKey());
+            }
+        };
+    }
+
+    private Subscriber<Message> newMessageSubscriber() {
+        return new Subscriber<Message>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Message message) {
+                conversationDisplayer.addToDisplay(message,self);
+            }
+        };
+    }
+
+    private Subscriber<Boolean> isTypingSubscriber() {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                conversationService.setTyping(self,destination,false);
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                if (aBoolean)
+                    conversationDisplayer.showTyping();
+                else
+                    conversationDisplayer.hideTyping();
+            }
+        };
+    }
+
+    private Subscriber<Chat> oldMessagesSubscriber() {
+        return new Subscriber<Chat>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Chat chat) {
+                currentKey = chat.getFirstKey();
+                if (chat.size() > 1)
+                    conversationDisplayer.displayOldMessages(chat, self);
+            }
+        };
+    }
+
     private final ConversationDisplayer.ConversationActionListener actionListener = new ConversationDisplayer.ConversationActionListener() {
 
         @Override
         public void onPullMessages() {
             conversationService.getOldMessages(self,destination,currentKey)
-                    .subscribe(new Subscriber<Chat>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onNext(Chat chat) {
-                            currentKey = chat.getFirstKey();
-                            if (chat.size() > 1)
-                                conversationDisplayer.displayOldMessages(chat, self);
-                        }
-                    });
+                    .subscribe(oldMessagesSubscriber());
         }
 
         @Override

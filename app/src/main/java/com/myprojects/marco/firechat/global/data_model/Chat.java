@@ -41,8 +41,7 @@ public class Chat {
     }
 
     public void add(Message message) {
-        if (!messages.contains(message))
-            messages.add(message);
+        messages.add(message);
     }
 
     public String getFirstKey() {

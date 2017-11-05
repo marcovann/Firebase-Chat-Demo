@@ -59,61 +59,12 @@ public class ConversationListPresenter {
 
         loginSubscription = loginService.getAuthentication()
                 .filter(successfullyAuthenticated())
-                .doOnNext(new Action1<Authentication>() {
-                    @Override
-                    public void call(Authentication authentication) {
-                        self = authentication.getUser();
-                    }
-                })
-                .flatMap(new Func1<Authentication, Observable<List<String>>>() {
-                    @Override
-                    public Observable<List<String>> call(Authentication authentication) {
-                        return conversationListService.getConversationsFor(self);
-                    }
-                })
-                .flatMap(new Func1<List<String>, Observable<String>>() {
-                    @Override
-                    public Observable<String> call(List<String> strings) {
-                        return Observable.from(strings);
-                    }
-                })
-                .flatMap(new Func1<String, Observable<User>>() {
-
-                    @Override
-                    public Observable<User> call(String s) {
-                        return userService.getUser(s);
-                    }
-                })
-                .flatMap(new Func1<User, Observable<Message>>() {
-                    @Override
-                    public Observable<Message> call(User user) {
-                        return conversationListService.getLastMessageFor(self, user);
-                    }
-                }, new Func2<User, Message, Pair<User,Message>>() {
-                    @Override
-                    public Pair<User, Message> call(User user, Message message) {
-                        return new Pair<>(user, message);
-                    }
-                })
-                .subscribe(new Subscriber<Pair<User, Message>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Pair<User, Message> pair) {
-                        User user = pair.first;
-                        Message message = pair.second;
-                        conversationListDisplayer.addToDisplay(
-                                new Conversation(user.getUid(),user.getName(),user.getImage(),message.getMessage(),message.getTimestamp()));
-                    }
-                });
+                .doOnNext(getAuthentication())
+                .flatMap(getConversations())
+                .flatMap(getConversation())
+                .flatMap(getUser())
+                .flatMap(getLastMessage(), asPair())
+                .subscribe(lastMessageSubscriber());
     }
 
     public void stopPresenting() {
@@ -126,6 +77,82 @@ public class ConversationListPresenter {
             @Override
             public Boolean call(Authentication authentication) {
                 return authentication.isSuccess();
+            }
+        };
+    }
+
+    private Action1<Authentication> getAuthentication() {
+        return new Action1<Authentication>() {
+            @Override
+            public void call(Authentication authentication) {
+                self = authentication.getUser();
+            }
+        };
+    }
+
+    private Func1<Authentication, Observable<List<String>>> getConversations() {
+        return new Func1<Authentication, Observable<List<String>>>() {
+            @Override
+            public Observable<List<String>> call(Authentication authentication) {
+                return conversationListService.getConversationsFor(self);
+            }
+        };
+    }
+
+    private Func1<List<String>, Observable<String>> getConversation() {
+        return new Func1<List<String>, Observable<String>>() {
+            @Override
+            public Observable<String> call(List<String> strings) {
+                return Observable.from(strings);
+            }
+        };
+    }
+
+    private Func1<String, Observable<User>> getUser() {
+        return new Func1<String, Observable<User>>() {
+            @Override
+            public Observable<User> call(String s) {
+                return userService.getUser(s);
+            }
+        };
+    }
+
+    private Func1<User, Observable<Message>> getLastMessage() {
+        return new Func1<User, Observable<Message>>() {
+            @Override
+            public Observable<Message> call(User user) {
+                return conversationListService.getLastMessageFor(self, user);
+            }
+        };
+    }
+
+    private Func2<User, Message, Pair<User, Message>> asPair() {
+        return new Func2<User, Message, Pair<User, Message>>() {
+            @Override
+            public Pair<User, Message> call(User user, Message message) {
+                return new Pair<>(user, message);
+            }
+        };
+    }
+
+    private Subscriber<Pair<User, Message>> lastMessageSubscriber() {
+        return new Subscriber<Pair<User, Message>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Pair<User, Message> pair) {
+                User user = pair.first;
+                Message message = pair.second;
+                conversationListDisplayer.addToDisplay(
+                        new Conversation(user.getUid(),user.getName(),user.getImage(),message.getMessage(),message.getTimestamp()));
             }
         };
     }
