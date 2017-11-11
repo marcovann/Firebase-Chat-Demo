@@ -43,19 +43,18 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter<Conversatio
     public void add(Chat chat, String user) {
         this.self = user;
         List<Message> messages = chat.getMessages();
-        Collections.reverse(messages);
-        int count = 0;
-        for (Message m: messages) {
-            if (this.chat.add(0, m))
-                count++;
-        }
-        notifyItemRangeInserted(0,count);
+        int count;
+        for (count = 0; count < messages.size() - 1; count++)
+            this.chat.add(count, messages.get(count));
+        notifyItemRangeInserted(0, count);
     }
 
     public void add(Message message, String user) {
         this.self = user;
-        this.chat.add(message);
-        notifyDataSetChanged();
+        if (this.chat.size() == 0 || !this.chat.get(this.chat.size()-1).equals(message)) {
+            this.chat.add(message);
+            notifyDataSetChanged();
+        }
     }
 
     @Override

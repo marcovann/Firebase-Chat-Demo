@@ -48,17 +48,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageViewHolder> {
             this.chat.addUser(u);
         this.self = user;
         List<Message> messages = chat.getMessages();
-        Collections.reverse(messages);
-        for (Message m: messages)
-            this.chat.add(0, m);
+        int count;
+        for (count = 0; count < messages.size() - 1; count++)
+            this.chat.add(count, messages.get(count));
         notifyItemRangeInserted(0,chat.size());
     }
 
     public void add(Message message, User sender, User user) {
-        this.chat.add(message);
-        this.chat.addUser(sender);
-        this.self = user;
-        notifyDataSetChanged();
+        if (!this.chat.get(this.chat.size()-1).equals(message)) {
+            this.chat.add(message);
+            this.chat.addUser(sender);
+            this.self = user;
+            notifyDataSetChanged();
+        }
     }
 
     @Override

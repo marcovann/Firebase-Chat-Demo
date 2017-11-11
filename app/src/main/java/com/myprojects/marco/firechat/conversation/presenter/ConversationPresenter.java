@@ -13,7 +13,6 @@ import com.myprojects.marco.firechat.user.service.UserService;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -30,7 +29,7 @@ public class ConversationPresenter {
     private final String destination;
     private final Navigator navigator;
 
-    private String currentKey;
+    private String firstKey = "";
 
     private Subscription subscription;
     private Subscription typingSubscription;
@@ -71,8 +70,7 @@ public class ConversationPresenter {
         conversationDisplayer.detach(actionListener);
         conversationService.setTyping(self,destination,false);
         subscription.unsubscribe();
-        if (typingSubscription != null)
-            typingSubscription.unsubscribe();
+        typingSubscription.unsubscribe();
     }
 
     private boolean userIsAuthenticated() {
@@ -93,8 +91,8 @@ public class ConversationPresenter {
         return new Func1<Chat, Observable<Message>>() {
             @Override
             public Observable<Message> call(Chat chat) {
+                firstKey = chat.getFirstKey();
                 conversationDisplayer.display(chat,self);
-                currentKey = chat.getFirstKey();
                 return conversationService.getNewMessages(self,destination,chat.getLastKey());
             }
         };
@@ -104,7 +102,8 @@ public class ConversationPresenter {
         return new Subscriber<Message>() {
             @Override
             public void onCompleted() {
-
+                conversationService.getNewMessages(self, destination, "")
+                        .subscribe(newMessageSubscriber());
             }
 
             @Override
@@ -114,6 +113,7 @@ public class ConversationPresenter {
 
             @Override
             public void onNext(Message message) {
+                if (firstKey == null || firstKey.equals("")) firstKey = message.getId();
                 conversationDisplayer.addToDisplay(message,self);
             }
         };
@@ -155,9 +155,8 @@ public class ConversationPresenter {
 
             @Override
             public void onNext(Chat chat) {
-                currentKey = chat.getFirstKey();
-                if (chat.size() > 1)
-                    conversationDisplayer.displayOldMessages(chat, self);
+                firstKey = chat.getFirstKey();
+                conversationDisplayer.displayOldMessages(chat, self);
             }
         };
     }
@@ -166,8 +165,9 @@ public class ConversationPresenter {
 
         @Override
         public void onPullMessages() {
-            conversationService.getOldMessages(self,destination,currentKey)
-                    .subscribe(oldMessagesSubscriber());
+            if (firstKey != null)
+                conversationService.getOldMessages(self,destination,firstKey)
+                        .subscribe(oldMessagesSubscriber());
         }
 
         @Override

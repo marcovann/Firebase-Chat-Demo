@@ -48,7 +48,7 @@ class ListenToAddChildEventsOnSubscribe<T> implements Observable.OnSubscribe<T> 
 
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            if (!subscriber.isUnsubscribed()) {
+            if (dataSnapshot.hasChildren() && !subscriber.isUnsubscribed()) {
                 subscriber.onNext(marshaller.call(dataSnapshot));
             }
         }

@@ -44,7 +44,7 @@ class ListenToSingleValueOnSubscribe<T> implements Observable.OnSubscribe<T> {
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
-            subscriber.onError(databaseError.toException()); //TODO handle errors in pipeline
+            subscriber.onError(databaseError.toException());
         }
 
     }

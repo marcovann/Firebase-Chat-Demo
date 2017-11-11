@@ -23,7 +23,7 @@ import rx.functions.Func1;
 public class FirebaseConversationDatabase implements ConversationDatabase {
 
     private static final int DEFAULT_LIMIT = 1000;
-    private static final int PULL_LIMIT = 20;
+    private static final int PULL_LIMIT = 30;
 
     public static final String LAST_MESSAGE = "LAST";
 
@@ -48,6 +48,8 @@ public class FirebaseConversationDatabase implements ConversationDatabase {
 
     @Override
     public Observable<Message> observeNewMessages(String self, String destination, String key) {
+        if (key.equals(""))
+            return firebaseObservableListeners.listenToAddChildEvents(messagesOfUser(self,destination).limitToLast(1), toMessage());
         return firebaseObservableListeners.listenToAddChildEvents(messagesOfUser(self,destination).startAt(null,key).limitToFirst(DEFAULT_LIMIT), toMessage());
     }
 

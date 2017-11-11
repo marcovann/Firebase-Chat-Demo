@@ -177,8 +177,7 @@ public class GlobalPresenter {
                 Chat chat = pair.first;
                 Users users = pair.second;
                 currentKey = chat.getFirstKey();
-                if (chat.size() > 1)
-                    globalDisplayer.displayOldMessages(chat, users, user);
+                globalDisplayer.displayOldMessages(chat, users, user);
             }
         };
     }
