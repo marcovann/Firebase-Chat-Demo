@@ -102,13 +102,13 @@ public class ConversationPresenter {
         return new Subscriber<Message>() {
             @Override
             public void onCompleted() {
-                conversationService.getNewMessages(self, destination, "")
-                        .subscribe(newMessageSubscriber());
+
             }
 
             @Override
             public void onError(Throwable e) {
-
+                conversationService.getNewMessages(self, destination, "")
+                        .subscribe(newMessageSubscriber());
             }
 
             @Override

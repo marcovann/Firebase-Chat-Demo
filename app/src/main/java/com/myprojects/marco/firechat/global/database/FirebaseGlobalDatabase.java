@@ -42,6 +42,8 @@ public class FirebaseGlobalDatabase implements GlobalDatabase {
 
     @Override
     public Observable<Message> observeNewMessages(String key) {
+        if (key.equals(""))
+            return firebaseObservableListeners.listenToAddChildEvents(globalMessages.limitToLast(DEFAULT_LIMIT), toMessage());
         return firebaseObservableListeners.listenToAddChildEvents(globalMessages.startAt(null,key).limitToLast(DEFAULT_LIMIT), toMessage());
     }
 

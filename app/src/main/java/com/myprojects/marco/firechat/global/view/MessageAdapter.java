@@ -55,7 +55,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageViewHolder> {
     }
 
     public void add(Message message, User sender, User user) {
-        if (!this.chat.get(this.chat.size()-1).equals(message)) {
+        if (this.chat.size() == 0 || !this.chat.get(this.chat.size()-1).equals(message)) {
             this.chat.add(message);
             this.chat.addUser(sender);
             this.self = user;

@@ -38,6 +38,8 @@ class ListenToSingleValueOnSubscribe<T> implements Observable.OnSubscribe<T> {
         public void onDataChange(DataSnapshot dataSnapshot) {
             if (dataSnapshot.hasChildren() && !subscriber.isUnsubscribed()) {
                 subscriber.onNext(marshaller.call(dataSnapshot));
+            } else {
+                subscriber.onError(new Exception());
             }
             subscriber.onCompleted();
         }

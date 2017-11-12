@@ -1,6 +1,7 @@
 package com.myprojects.marco.firechat.conversation_list.presenter;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 
 import com.myprojects.marco.firechat.conversation.data_model.Message;
@@ -121,7 +122,12 @@ public class ConversationListPresenter {
         return new Func1<User, Observable<Message>>() {
             @Override
             public Observable<Message> call(User user) {
-                return conversationListService.getLastMessageFor(self, user);
+                return conversationListService.getLastMessageFor(self, user).onErrorReturn(new Func1<Throwable, Message>() {
+                    @Override
+                    public Message call(Throwable throwable) {
+                        return null;
+                    }
+                });
             }
         };
     }

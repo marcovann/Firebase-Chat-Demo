@@ -14,9 +14,12 @@ import com.myprojects.marco.firechat.navigation.AndroidMainNavigator;
 import com.myprojects.marco.firechat.user.data_model.User;
 import com.myprojects.marco.firechat.user.service.UserService;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by marco on 16/08/16.
@@ -35,8 +38,6 @@ public class MainPresenter {
     private final String token;
 
     private Subscription loginSubscription;
-    private Subscription userSubscription;
-    private Subscription messageSubscription;
 
     public MainPresenter(LoginService loginService,
                          UserService userService,
@@ -60,7 +61,53 @@ public class MainPresenter {
         navigator.init();
         mainDisplayer.attach(drawerActionListener,navigationActionListener,searchActionListener);
 
-        final Subscriber userSubscriber = new Subscriber<User>() {
+        loginSubscription = loginService.getAuthentication()
+                .first()
+                .flatMap(getUser())
+                .subscribe(userSubscriber());
+    }
+
+    public void stopPresenting() {
+        mainDisplayer.detach(drawerActionListener,navigationActionListener,searchActionListener);
+        loginSubscription.unsubscribe();
+    }
+
+    private Func1<Authentication, Observable<User>> getUser() {
+        return new Func1<Authentication, Observable<User>>() {
+            @Override
+            public Observable<User> call(Authentication authentication) {
+                if (!authentication.isSuccess()) {
+                    navigator.toLogin();
+                    return Observable.empty();
+                }
+                return userService.getUser(authentication.getUser().getUid());
+            }
+        };
+    }
+
+    private Subscriber<User> userSubscriber() {
+        return new Subscriber<User>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                navigator.toFirstLogin();
+            }
+
+            @Override
+            public void onNext(User user) {
+                messagingService.readToken(user)
+                        .subscribe(tokenSubscriber(user));
+                mainService.initLastSeen(user);
+                mainDisplayer.setUser(user);
+            }
+        };
+    }
+
+    private Subscriber<String> tokenSubscriber(final User user) {
+        return new Subscriber<String>() {
             @Override
             public void onCompleted() {
 
@@ -72,57 +119,12 @@ public class MainPresenter {
             }
 
             @Override
-            public void onNext(final User user) {
-                if (user == null) {
-                    navigator.toFirstLogin();
-                } else {
-                    messageSubscription = messagingService.readToken(user)
-                            .subscribe(new Subscriber<String>() {
-                                @Override
-                                public void onCompleted() {
-
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-
-                                }
-
-                                @Override
-                                public void onNext(String s) {
-                                    if (s == null || !s.equals(token)) {
-                                        messageSubscription.unsubscribe();
-                                        messagingService.setToken(user);
-                                    }
-                                }
-                            });
-                    mainService.initLastSeen(user);
-                    mainDisplayer.setUser(user);
+            public void onNext(String currentToken) {
+                if (currentToken == null || !currentToken.equals(token)) {
+                    messagingService.setToken(user);
                 }
             }
-
         };
-
-        loginSubscription = loginService.getAuthentication()
-                .first().subscribe(new Action1<Authentication>() {
-                    @Override
-                    public void call(Authentication authentication) {
-                        if (authentication.isSuccess()) {
-                            userSubscription = userService.getUser(authentication.getUser().getUid())
-                                    .first().subscribe(userSubscriber);
-
-                        } else {
-                            navigator.toLogin();
-                        }
-                    }
-                });
-    }
-
-    public void stopPresenting() {
-        mainDisplayer.detach(drawerActionListener,navigationActionListener,searchActionListener);
-        if (loginSubscription != null) loginSubscription.unsubscribe();
-        if (userSubscription != null) userSubscription.unsubscribe();
-        if (messageSubscription != null) messageSubscription.unsubscribe();
     }
 
     private final MainDisplayer.DrawerActionListener drawerActionListener = new MainDisplayer.DrawerActionListener() {

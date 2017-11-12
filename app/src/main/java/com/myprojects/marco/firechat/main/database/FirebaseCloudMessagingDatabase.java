@@ -28,7 +28,7 @@ public class FirebaseCloudMessagingDatabase implements CloudMessagingDatabase {
 
     @Override
     public Observable<String> readToken(User user) {
-        return firebaseObservableListeners.listenToValueEvents(
+        return firebaseObservableListeners.listenToSingleValueEvents(
                 databaseReference.child(user.getUid()),asString());
     }
 

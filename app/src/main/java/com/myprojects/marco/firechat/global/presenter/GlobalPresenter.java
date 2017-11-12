@@ -35,7 +35,7 @@ public class GlobalPresenter {
     private final UserService userService;
     private final Navigator navigator;
 
-    private String currentKey;
+    private String firstKey = "";
     private User user;
 
     public GlobalPresenter(
@@ -59,9 +59,29 @@ public class GlobalPresenter {
         loginService.getAuthentication()
                 .flatMap(getOldMessages())
                 .flatMap(getUsers(), asPairChatUsers())
-                .flatMap(getNewMessages())
-                .flatMap(getUser(), asPairMessageUser())
-                .subscribe(newMessagesSubscriber());
+                .subscribe(new Subscriber<Pair<Chat, Users>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        globalService.getNewMessages("")
+                                .flatMap(getUser(), asPairMessageUser())
+                                .subscribe(newMessagesSubscriber());
+                    }
+
+                    @Override
+                    public void onNext(Pair<Chat, Users> pair) {
+                        Chat chat = pair.first;
+                        Users users = pair.second;
+                        globalDisplayer.display(chat, users, user);
+                        globalService.getNewMessages(chat.getLastKey())
+                                .flatMap(getUser(), asPairMessageUser())
+                                .subscribe(newMessagesSubscriber());
+                    }
+                });
 
     }
 
@@ -83,7 +103,7 @@ public class GlobalPresenter {
         return new Func1<Chat, Observable<Users>>() {
             @Override
             public Observable<Users> call(Chat chat) {
-                currentKey = chat.getFirstKey();
+                firstKey = chat.getFirstKey();
                 List<Observable<User>> list = new ArrayList<>();
                 for (Message m : chat.getMessages())
                     list.add(userService.getUser(m.getUid()));
@@ -105,18 +125,6 @@ public class GlobalPresenter {
             @Override
             public Pair<Chat, Users> call(Chat chat, Users users) {
                 return new Pair<>(chat, users);
-            }
-        };
-    }
-
-    private Func1<Pair<Chat, Users>, Observable<Message>> getNewMessages() {
-        return new Func1<Pair<Chat, Users>, Observable<Message>>() {
-            @Override
-            public Observable<Message> call(Pair<Chat, Users> pair) {
-                Chat chat = pair.first;
-                Users users = pair.second;
-                globalDisplayer.display(chat, users, user);
-                return globalService.getNewMessages(chat.getLastKey());
             }
         };
     }
@@ -155,6 +163,10 @@ public class GlobalPresenter {
             public void onNext(Pair<Message, User> pair) {
                 Message message = pair.first;
                 User sender = pair.second;
+
+                if (firstKey == null || firstKey.equals(""))
+                    firstKey = message.getId();
+
                 globalDisplayer.addToDisplay(message, sender, user);
             }
         };
@@ -176,7 +188,7 @@ public class GlobalPresenter {
             public void onNext(Pair<Chat, Users> pair) {
                 Chat chat = pair.first;
                 Users users = pair.second;
-                currentKey = chat.getFirstKey();
+                firstKey = chat.getFirstKey();
                 globalDisplayer.displayOldMessages(chat, users, user);
             }
         };
@@ -186,9 +198,10 @@ public class GlobalPresenter {
 
         @Override
         public void onPullMessages() {
-            globalService.getOldMessages(currentKey)
-                    .flatMap(getUsers(), asPairChatUsers())
-                    .subscribe(oldMessagesSubscriber());
+            if (firstKey != null)
+                globalService.getOldMessages(firstKey)
+                        .flatMap(getUsers(), asPairChatUsers())
+                        .subscribe(oldMessagesSubscriber());
         }
 
         @Override
