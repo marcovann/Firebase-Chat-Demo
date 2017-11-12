@@ -22,17 +22,19 @@ public class Chat {
         return messages.size();
     }
 
-    public Message get(int position) {
+    public Message getMessage(int position) {
         return messages.get(position);
     }
 
-    public boolean add(int i, Message message) {
-        this.messages.add(i, message);
-        return true;
+    public void addMessage(Message message) {
+        this.messages.add(message);
     }
 
-    public void add(Message message) {
-        this.messages.add(message);
+    public int addMessages(List<Message> messages) {
+        int count;
+        for (count = 0; count < messages.size() - 1; count++)
+            this.messages.add(count, messages.get(count));
+        return count;
     }
 
     public List<Message> getMessages() {

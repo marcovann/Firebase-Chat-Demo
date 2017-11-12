@@ -112,15 +112,6 @@ public class ConversationListPresenter {
         };
     }
 
-    private Func1<String, Observable<User>> getUser() {
-        return new Func1<String, Observable<User>>() {
-            @Override
-            public Observable<User> call(String s) {
-                return userService.getUser(s);
-            }
-        };
-    }
-
     private Func1<User, Observable<Message>> getLastMessage() {
         return new Func1<User, Observable<Message>>() {
             @Override

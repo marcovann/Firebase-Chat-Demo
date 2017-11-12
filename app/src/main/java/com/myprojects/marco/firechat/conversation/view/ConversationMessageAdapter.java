@@ -1,7 +1,6 @@
 package com.myprojects.marco.firechat.conversation.view;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -12,7 +11,6 @@ import com.myprojects.marco.firechat.conversation.data_model.Chat;
 import com.myprojects.marco.firechat.conversation.data_model.Message;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -42,17 +40,14 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter<Conversatio
 
     public void add(Chat chat, String user) {
         this.self = user;
-        List<Message> messages = chat.getMessages();
-        int count;
-        for (count = 0; count < messages.size() - 1; count++)
-            this.chat.add(count, messages.get(count));
+        int count = this.chat.addMessages(chat.getMessages());
         notifyItemRangeInserted(0, count);
     }
 
     public void add(Message message, String user) {
         this.self = user;
-        if (this.chat.size() == 0 || !this.chat.get(this.chat.size()-1).equals(message)) {
-            this.chat.add(message);
+        if (this.chat.size() == 0 || !this.chat.getMessage(this.chat.size()-1).equals(message)) {
+            this.chat.addMessage(message);
             notifyDataSetChanged();
         }
     }
@@ -76,7 +71,7 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter<Conversatio
 
     @Override
     public void onBindViewHolder(ConversationMessageViewHolder holder, int position) {
-        holder.bind(chat.get(position));
+        holder.bind(chat.getMessage(position));
     }
 
     @Override
@@ -86,24 +81,24 @@ public class ConversationMessageAdapter extends RecyclerView.Adapter<Conversatio
 
     @Override
     public long getItemId(int position) {
-        return Long.parseLong(chat.get(position).getTimestamp().replace("/",""));
+        return Long.parseLong(chat.getMessage(position).getTimestamp().replace("/",""));
     }
 
     @Override
     public int getItemViewType(int position) {
         try {
-            String[] date1 = Utils.getDate(chat.get(position - 1).getTimestamp()).split("/");
-            String[] date2 = Utils.getDate(chat.get(position).getTimestamp()).split("/");
+            String[] date1 = Utils.getDate(chat.getMessage(position - 1).getTimestamp()).split("/");
+            String[] date2 = Utils.getDate(chat.getMessage(position).getTimestamp()).split("/");
             String concatDate1 = date1[0] + date1[1] + date1[2];
             String concatDate2 = date2[0] + date2[1] + date2[2];
             if (!concatDate1.equals(concatDate2)) {
-                return chat.get(position).getDestination().equals(self) ? VIEW_TYPE_MESSAGE_THIS_USER_OTHER_DATE : VIEW_TYPE_MESSAGE_OTHER_USERS_OTHER_DATE;
+                return chat.getMessage(position).getDestination().equals(self) ? VIEW_TYPE_MESSAGE_THIS_USER_OTHER_DATE : VIEW_TYPE_MESSAGE_OTHER_USERS_OTHER_DATE;
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            return chat.get(position).getDestination().equals(self) ? VIEW_TYPE_MESSAGE_THIS_USER_OTHER_DATE : VIEW_TYPE_MESSAGE_OTHER_USERS_OTHER_DATE;
+            return chat.getMessage(position).getDestination().equals(self) ? VIEW_TYPE_MESSAGE_THIS_USER_OTHER_DATE : VIEW_TYPE_MESSAGE_OTHER_USERS_OTHER_DATE;
         }
 
-        return chat.get(position).getDestination().equals(self) ? VIEW_TYPE_MESSAGE_THIS_USER : VIEW_TYPE_MESSAGE_OTHER_USERS;
+        return chat.getMessage(position).getDestination().equals(self) ? VIEW_TYPE_MESSAGE_THIS_USER : VIEW_TYPE_MESSAGE_OTHER_USERS;
     }
 
 }

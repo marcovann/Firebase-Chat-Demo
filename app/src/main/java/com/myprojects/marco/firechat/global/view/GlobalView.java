@@ -208,17 +208,11 @@ public class GlobalView extends LinearLayout implements GlobalDisplayer {
         @Override
         public void onClick(View v) {
 
-            //If popup is not showing => emoji keyboard is not visible, we need to show it
-            if(!popup.isShowing()){
-
-                //If keyboard is visible, simply show the emoji popup
-                if(popup.isKeyBoardOpen()){
+            if (!popup.isShowing()){
+                if (popup.isKeyBoardOpen()){
                     popup.showAtBottom();
                     changeEmojiKeyboardIcon(emojiconButton, R.drawable.ic_menu_keyboard);
-                }
-
-                //else, open the text keyboard first and immediately after that show the emoji popup
-                else{
+                } else {
                     messageEditText.setFocusableInTouchMode(true);
                     messageEditText.requestFocus();
                     popup.showAtBottomPending();
@@ -226,10 +220,7 @@ public class GlobalView extends LinearLayout implements GlobalDisplayer {
                     inputMethodManager.showSoftInput(messageEditText, InputMethodManager.SHOW_IMPLICIT);
                     changeEmojiKeyboardIcon(emojiconButton, R.drawable.ic_menu_keyboard);
                 }
-            }
-
-            //If popup is showing, simply dismiss it to show the undelying text keyboard
-            else{
+            } else {
                 popup.dismiss();
             }
         }

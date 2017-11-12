@@ -30,7 +30,7 @@ public class PersistedMainService implements MainService {
         if (firebaseUser != null)
             return firebaseUser.getProviders().get(0);
         else
-            throw new Exception("Couldn't get the provider");
+            throw new Exception("Couldn't getMessage the provider");
     }
 
     @Override

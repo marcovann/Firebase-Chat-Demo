@@ -35,21 +35,15 @@ public class Chat {
         return messages.get(position);
     }
 
-    public boolean add(int i, Message message) {
-        this.messages.add(i, message);
-        return true;
-    }
-
-    public void add(Message message) {
+    public void addMessage(Message message) {
         messages.add(message);
     }
 
-    public String getFirstKey() {
-        return messages.get(0).getId();
-    }
-
-    public String getLastKey() {
-        return messages.get(messages.size()-1).getId();
+    public int addMessages(List<Message> messages) {
+        int count;
+        for (count = 0; count < messages.size() - 1; count++)
+            this.messages.add(count, messages.get(count));
+        return count;
     }
 
     public User getUser(String uid) {
@@ -58,6 +52,19 @@ public class Chat {
 
     public void addUser(User user) {
         users.put(user.getUid(),user);
+    }
+
+    public void addUsers(List<User> users) {
+        for (User user: users)
+            this.users.put(user.getUid(), user);
+    }
+
+    public String getFirstKey() {
+        return messages.get(0).getId();
+    }
+
+    public String getLastKey() {
+        return messages.get(messages.size()-1).getId();
     }
 
     public Chat sortedByDate() {

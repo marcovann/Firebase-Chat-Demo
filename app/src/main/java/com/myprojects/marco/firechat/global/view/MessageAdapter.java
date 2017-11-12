@@ -13,7 +13,6 @@ import com.myprojects.marco.firechat.user.data_model.User;
 import com.myprojects.marco.firechat.user.data_model.Users;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,26 +36,21 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageViewHolder> {
 
     public void update(Chat chat, Users users, User user) {
         this.chat = chat;
-        for (User u: users.getUsers())
-            this.chat.addUser(u);
+        this.chat.addUsers(users.getUsers());
         this.self = user;
         notifyDataSetChanged();
     }
 
     public void add(Chat chat, Users users, User user) {
-        for (User u: users.getUsers())
-            this.chat.addUser(u);
+        this.chat.addUsers(users.getUsers());
         this.self = user;
-        List<Message> messages = chat.getMessages();
-        int count;
-        for (count = 0; count < messages.size() - 1; count++)
-            this.chat.add(count, messages.get(count));
-        notifyItemRangeInserted(0,chat.size());
+        int count = this.chat.addMessages(chat.getMessages());
+        notifyItemRangeInserted(0, count);
     }
 
     public void add(Message message, User sender, User user) {
         if (this.chat.size() == 0 || !this.chat.get(this.chat.size()-1).equals(message)) {
-            this.chat.add(message);
+            this.chat.addMessage(message);
             this.chat.addUser(sender);
             this.self = user;
             notifyDataSetChanged();

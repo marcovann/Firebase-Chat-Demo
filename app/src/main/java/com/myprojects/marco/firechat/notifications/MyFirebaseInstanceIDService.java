@@ -63,7 +63,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         };
 
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        requestQueue.add(stringRequest);*/
+        requestQueue.addMessage(stringRequest);*/
 
     }
 }
