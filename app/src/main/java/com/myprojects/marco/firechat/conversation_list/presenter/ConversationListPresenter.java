@@ -38,8 +38,6 @@ public class ConversationListPresenter {
     private LoginService loginService;
     private UserService userService;
 
-    private Subscription loginSubscription;
-
     private User self;
 
     public ConversationListPresenter(
@@ -58,19 +56,24 @@ public class ConversationListPresenter {
     public void startPresenting() {
         conversationListDisplayer.attach(conversationInteractionListener);
 
-        loginSubscription = loginService.getAuthentication()
+        loginService.getAuthentication()
                 .filter(successfullyAuthenticated())
                 .doOnNext(getAuthentication())
                 .flatMap(getConversations())
                 .flatMap(getConversation())
-                .flatMap(getUser())
-                .flatMap(getLastMessage(), asPair())
-                .subscribe(lastMessageSubscriber());
+                .forEach(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        userService.getUser(s)
+                                .flatMap(getLastMessage(), asPair())
+                                .subscribe(lastMessageSubscriber());
+                    }
+                });
+
     }
 
     public void stopPresenting() {
         conversationListDisplayer.detach(conversationInteractionListener);
-        loginSubscription.unsubscribe();
     }
 
     private Func1<Authentication, Boolean> successfullyAuthenticated() {
@@ -122,12 +125,7 @@ public class ConversationListPresenter {
         return new Func1<User, Observable<Message>>() {
             @Override
             public Observable<Message> call(User user) {
-                return conversationListService.getLastMessageFor(self, user).onErrorReturn(new Func1<Throwable, Message>() {
-                    @Override
-                    public Message call(Throwable throwable) {
-                        return null;
-                    }
-                });
+                return conversationListService.getLastMessageFor(self, user);
             }
         };
     }
