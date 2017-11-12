@@ -128,11 +128,10 @@ public class ProfilePresenter {
             public void onNext(Pair<String, User> pair) {
                 String image = pair.first;
                 User user = pair.second;
-                if (user.getImage() != null) {
+                if (user.getImage() != null)
                     storageService.removeImage(user.getImage());
-                    userService.setProfileImage(self, image);
-                    profileDisplayer.updateProfileImage(bitmap);
-                }
+                userService.setProfileImage(self, image);
+                profileDisplayer.updateProfileImage(bitmap);
             }
         };
     }
